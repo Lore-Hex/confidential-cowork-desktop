@@ -1,4 +1,4 @@
-import { ipcMain, safeStorage, shell } from 'electron'
+import { BrowserWindow, ipcMain, safeStorage, shell } from 'electron'
 import { TrustedRouterSignIn } from '../trustedrouter-sign-in'
 import { getGuiDataPath } from '../app-data-paths'
 import { CredentialVault } from '../credential-vault'
@@ -24,6 +24,8 @@ export function registerAccountHandlers(manager: WorkspaceManager): void {
   ipcMain.handle(IPC_CHANNELS.ACCOUNT_SIGN_IN, async (event) => {
     assertTrustedSender(event)
     await signIn.start()
+    const window = BrowserWindow.fromWebContents(event.sender)
+    if (window && !window.isDestroyed()) { window.show(); window.focus() }
     return { configured: true }
   })
   ipcMain.handle(IPC_CHANNELS.ACCOUNT_CANCEL_SIGN_IN, async (event) => {
