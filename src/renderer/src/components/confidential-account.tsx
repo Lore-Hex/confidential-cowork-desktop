@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { KeyRound, LockKeyhole, X } from 'lucide-react'
+import { KeyRound, LockKeyhole, LogIn, X } from 'lucide-react'
 import { useAppStore } from '../store'
 
 export function ConfidentialAccount(): React.JSX.Element {
@@ -7,11 +7,23 @@ export function ConfidentialAccount(): React.JSX.Element {
   const [open, setOpen] = useState(false)
   const [key, setKey] = useState('')
   const [busy, setBusy] = useState(false)
+  const [signingIn, setSigningIn] = useState(false)
+  const [manual, setManual] = useState(false)
   const [error, setError] = useState('')
   useEffect(() => {
     void window.piDesktop.account.status().then((status) => setConfigured(status.configured))
       .catch(() => { setConfigured(false); setError('Could not open secure key storage.') })
   }, [])
+
+  async function signIn(): Promise<void> {
+    setBusy(true); setSigningIn(true); setError('')
+    try {
+      await window.piDesktop.account.signIn()
+      setKey(''); setConfigured(true); setOpen(false)
+      if (useAppStore.getState().activeWorkspace) await useAppStore.getState().restartPi()
+    } catch (err) { setError(err instanceof Error ? err.message : 'Could not sign in.') }
+    finally { setBusy(false); setSigningIn(false) }
+  }
 
   async function save(event: React.FormEvent): Promise<void> {
     event.preventDefault()
@@ -38,18 +50,23 @@ export function ConfidentialAccount(): React.JSX.Element {
     </div>
     {(open || configured === false) && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-5">
       <form onSubmit={(event) => void save(event)} className="relative w-full max-w-lg rounded-lg border border-border bg-surface p-6 shadow-xl" aria-label="TrustedRouter account">
-        {configured && <button type="button" aria-label="Close account" className="absolute right-3 top-3 p-2" onClick={() => { setOpen(false); setKey('') }}><X size={18} /></button>}
+        {configured && <button type="button" disabled={busy} aria-label="Close account" className="absolute right-3 top-3 p-2" onClick={() => { setOpen(false); setKey('') }}><X size={18} /></button>}
         <LockKeyhole size={28} className="mb-4 text-accent" />
         <h1 className="mb-2 text-xl font-semibold">Your confidential workspace</h1>
         <p className="mb-5 text-sm text-muted">Inference uses TrustedRouter confidential routes. Conversation history is saved locally. Local tools can access your files and network, subject to your approvals.</p>
+        <button type="button" disabled={busy} className="mb-3 flex w-full items-center justify-center gap-2 rounded bg-accent px-4 py-3 text-white disabled:opacity-50" onClick={() => void signIn()}><LogIn size={18} />{signingIn ? 'Waiting for sign-in...' : 'Sign in with TrustedRouter'}</button>
+        {signingIn && <button type="button" className="mb-3 text-sm text-muted" onClick={() => void window.piDesktop.account.cancelSignIn()}>Cancel sign-in</button>}
+        <button type="button" disabled={busy} className="mb-4 flex items-center gap-2 text-sm text-muted" onClick={() => setManual(!manual)}><KeyRound size={16} />{manual ? 'Hide API key entry' : 'Use an API key instead'}</button>
+        {manual && <>
         <label className="mb-2 block text-sm" htmlFor="trustedrouter-key">TrustedRouter API key</label>
         <input id="trustedrouter-key" type="password" autoComplete="off" spellCheck={false} value={key} onChange={(event) => setKey(event.target.value)} placeholder={configured ? 'Enter a replacement key' : 'sk-tr-v1-...'} className="mb-3 w-full rounded border border-border-strong bg-app px-3 py-3" />
-        <p className="mb-4 text-xs text-dim">Stored encrypted with your operating system key store. Never included in conversation exports.</p>
-        {error && <p role="alert" className="mb-3 text-sm text-error">{error}</p>}
         <div className="flex flex-wrap items-center gap-3">
-          <button disabled={busy || !key.trim()} className="rounded bg-accent px-4 py-2 text-white disabled:opacity-50">{busy ? 'Saving...' : configured ? 'Replace key' : 'Save key and continue'}</button>
-          {configured && <button type="button" disabled={busy} className="rounded px-3 py-2 text-error hover:bg-surface-hover" onClick={() => void remove()}>Remove key</button>}
+          <button disabled={busy || !key.trim()} className="rounded border border-border-strong px-4 py-2 disabled:opacity-50">{busy ? 'Saving...' : configured ? 'Replace key' : 'Save key and continue'}</button>
         </div>
+        </>}
+        <p className="my-4 text-xs text-dim">Credentials are encrypted with your operating system key store. Never included in conversation exports.</p>
+        {error && <p role="alert" className="mb-3 text-sm text-error">{error}</p>}
+        {configured && <button type="button" disabled={busy} className="rounded px-3 py-2 text-error hover:bg-surface-hover" onClick={() => void remove()}>Disconnect account</button>}
         <div className="mt-5 flex gap-4 text-sm">
           <button type="button" className="text-accent" onClick={() => void window.piDesktop.system.openExternal('https://trustedrouter.com/console/api-keys')}>Get an API key</button>
           <button type="button" className="text-accent" onClick={() => void window.piDesktop.system.openExternal('https://trustedrouter.com/trust')}>Verify attestation</button>

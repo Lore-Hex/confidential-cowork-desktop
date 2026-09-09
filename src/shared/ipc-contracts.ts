@@ -58,6 +58,8 @@ export const IPC_CHANNELS = {
   SETTINGS_GET_ALL: 'settings:get-all',
   SETTINGS_SAVE: 'settings:save',
   ACCOUNT_STATUS: 'account:status',
+  ACCOUNT_SIGN_IN: 'account:sign-in',
+  ACCOUNT_CANCEL_SIGN_IN: 'account:cancel-sign-in',
   ACCOUNT_SAVE: 'account:save',
   ACCOUNT_REMOVE: 'account:remove',
 

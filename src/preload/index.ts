@@ -133,6 +133,8 @@ interface PiDesktopAPI {
   }
 
   account: {
+    signIn(): Promise<{ configured: boolean }>
+    cancelSignIn(): Promise<{ configured: boolean }>
     status(): Promise<{ configured: boolean }>
     save(key: string): Promise<{ configured: boolean }>
     remove(): Promise<{ configured: boolean }>
@@ -402,6 +404,8 @@ const api: PiDesktopAPI = {
   },
 
   account: {
+    signIn: () => ipcRenderer.invoke(IPC_CHANNELS.ACCOUNT_SIGN_IN),
+    cancelSignIn: () => ipcRenderer.invoke(IPC_CHANNELS.ACCOUNT_CANCEL_SIGN_IN),
     status: () => ipcRenderer.invoke(IPC_CHANNELS.ACCOUNT_STATUS),
     save: (key) => ipcRenderer.invoke(IPC_CHANNELS.ACCOUNT_SAVE, key),
     remove: () => ipcRenderer.invoke(IPC_CHANNELS.ACCOUNT_REMOVE),
