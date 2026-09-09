@@ -24,6 +24,7 @@ import {
 import { escapeCmdSpawn } from './cmd-escape'
 import { appLog } from './app-log'
 import { getGuiDataPath } from './app-data-paths'
+import { bundledRuntime, confidentialCommand, confidentialStart } from './confidential-runtime'
 
 /**
  * Manages a Pi RPC child process.
@@ -456,6 +457,12 @@ function toPiCli(resolution: PiResolution, kind: AgentEngineKind): PiCli {
  * have `pi` on it.
  */
 export function getPiCli(): PiCli {
+  const bundled = bundledRuntime()
+  if (bundled) return {
+    kind: 'pi', script: bundled, node: '', useNode: false, needsShell: false,
+    found: existsSync(bundled), nodeFound: true,
+    failureReason: existsSync(bundled) ? null : 'The bundled agent is missing. Reinstall TR Confidential Cowork.',
+  }
   const resolution = getResolution()
   return toPiCli(
     resolution,
@@ -488,6 +495,7 @@ export function getConfiguredEngineKind(): AgentEngineKind {
  * configured one.
  */
 export function getPiCliForEngine(engine: AgentEngineKind): PiCli {
+  if (bundledRuntime()) return getPiCli()
   const configured = getPiCli()
   // The configured resolution already targets this engine, including any
   // executable path the user set for it.
@@ -723,6 +731,7 @@ export class PiRpcManager extends EventEmitter {
   }
 
   private async doStart(options: PiStartOptions): Promise<PiStatus> {
+    options = await confidentialStart(options)
     this.kill()
     this.setStatus('starting')
     this.stderrBuffer = ''
@@ -1009,6 +1018,7 @@ export class PiRpcManager extends EventEmitter {
    * Returns a correlated response if an id is provided.
    */
   async sendCommand(command: Record<string, unknown>): Promise<PiResponseEvent | null> {
+    command = confidentialCommand(command)
     if (!this.process?.stdin || this.status !== 'running') {
       throw new Error('Pi process is not running')
     }

@@ -26,7 +26,7 @@ import { TerminalPanel } from './terminal'
 import { useChatScroll, useGlobalWorkflowOpen } from '../hooks'
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { clsx } from 'clsx'
-import piLogo from '../assets/pi-logo.svg'
+import piLogo from '../assets/cowork.png'
 import {
   FolderTree,
   GitCompare,
@@ -244,7 +244,7 @@ export function ChatPanel(): React.JSX.Element {
                     <div className="mb-8 text-center">
                       <img
                         src={piLogo}
-                        alt="Pi Desktop"
+                        alt="TR Confidential Cowork"
                         className="mx-auto mb-4 block h-14 w-14"
                       />
                       <h2 className="text-2xl font-semibold text-primary">What should {engineLabel} work on?</h2>

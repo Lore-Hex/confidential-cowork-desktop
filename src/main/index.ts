@@ -6,7 +6,6 @@ import { workspaceTrustStore } from './workspace-trust'
 import { WorkspaceManager } from './workspace-manager'
 import { registerIpcHandlers, loadAppSettings, saveAppSettings } from './ipc-handlers'
 import { setPiExecutableOverride, cleanupPiChildTempDir } from './pi-rpc-manager'
-import { fetchAllCatalogPackages } from './package-catalog'
 import { activityStatsStore } from './activity-stats'
 import { configureGuiDataDir, getCanonicalUserDataDir, getExternalGuiDataDir, migrateLegacyGuiData } from './app-data-paths'
 import { setupTray, setTrayEnabled, isTrayEnabled, isTrayAvailable, destroyTray, notifyFirstHide } from './tray-manager'
@@ -14,6 +13,8 @@ import { shouldHideToTray } from './tray-decision'
 import { createEditorGuard } from './editor-guard'
 import { appLog } from './app-log'
 import { IPC_CHANNELS } from '../shared/ipc-contracts'
+import { configureConfidentialRuntime, runtimeLocation } from './confidential-runtime'
+import { createAccountVault, registerAccountHandlers } from './ipc/account-handlers'
 
 // Env var honored on startup: if set, the named directory becomes the active
 // workspace (created on first run, switched to on subsequent runs). The CLI
@@ -22,7 +23,7 @@ const WORKSPACE_ENV_VAR = 'PI_DESKTOP_WORKSPACE'
 
 // Electron's development executable otherwise registers as Electron on Windows,
 // which makes the taskbar and notification identity use Electron branding.
-app.setName('Pi Desktop')
+app.setName('TR Confidential Cowork')
 if (process.platform === 'win32') app.setAppUserModelId('dev.pi.desktop-gui')
 
 // Suppress EPIPE errors from closed subprocess pipes
@@ -127,6 +128,11 @@ const userDataDir = externalUserDataDir ?? getCanonicalUserDataDir(app.getPath('
 mkdirSync(userDataDir, { recursive: true })
 app.setPath('userData', userDataDir)
 configureGuiDataDir(userDataDir)
+// Isolated from Pi, OMP, and the previous terminal launcher. Never import their credentials.
+const agentDir = join(userDataDir, 'agent')
+process.env.PI_CODING_AGENT_DIR = agentDir
+process.env.TR_COWORK_CODING_AGENT_DIR = agentDir
+process.env.OMP_CODING_AGENT_DIR = agentDir
 
 // ─── Window Creation ─────────────────────────────────────────────────────────
 
@@ -172,7 +178,7 @@ function createMainWindow(): BrowserWindow {
     height: WINDOW_HEIGHT,
     minWidth: MIN_WINDOW_WIDTH,
     minHeight: MIN_WINDOW_HEIGHT,
-    title: 'Pi Desktop',
+    title: 'TR Confidential Cowork',
     backgroundColor: '#0a0a0a',
     icon: appIcon,
     show: false,
@@ -392,6 +398,13 @@ function createApplicationMenu(): void {
 // ─── App Lifecycle ───────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
+  const resources = app.isPackaged ? join(process.resourcesPath, 'resources') : join(app.getAppPath(), 'resources')
+  const vault = createAccountVault()
+  configureConfidentialRuntime({
+    executable: runtimeLocation(resources), agentDir,
+    permissionExtension: join(resources, 'pi-desktop-permissions.ts'),
+    readKey: () => vault.read(),
+  })
   if (!externalUserDataDir) {
     await migrateLegacyGuiData({
       appDataDir: app.getPath('appData'),
@@ -428,6 +441,7 @@ app.whenReady().then(async () => {
     getWindow: () => mainWindow,
     showWindow: showMainWindow,
   }, getAppIconPath())
+  registerAccountHandlers(workspaceManager)
 
   // The renderer mirrors its editor-dirty flag on every transition; the
   // quit/close/reload guards below read the cached value.
@@ -456,7 +470,7 @@ app.whenReady().then(async () => {
 
   // Warm the package catalog cache in the background so the Catalog tab is
   // instant when first opened. Non-blocking; failures are ignored (offline etc).
-  void fetchAllCatalogPackages().catch(() => {})
+  // Catalog access is user initiated, not a startup network request.
 
   // Baseline scan of the persisted activity stats, so the store reflects reality
   // even if the home screen is never opened this run. Non-blocking.
@@ -529,7 +543,7 @@ async function applyWorkspaceFromEnv(manager: WorkspaceManager): Promise<void> {
 
   const path = resolvePath(raw)
   if (!existsSync(path)) {
-    console.warn(`[Pi Desktop] ${WORKSPACE_ENV_VAR}=${raw} does not exist; ignoring`)
+    console.warn(`[TR Confidential Cowork] ${WORKSPACE_ENV_VAR}=${raw} does not exist; ignoring`)
     return
   }
 

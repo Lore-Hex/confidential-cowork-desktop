@@ -72,8 +72,8 @@ test('isMissingRepositoryError classifies only repository discovery failures', (
 
 test('worktree names are deterministic and isolated by workspace id', () => {
   assert.equal(
-    worktreeBranchName('Pi Desktop', 'ws-123-abc'),
-    'pi/pi-desktop-123-abc'
+    worktreeBranchName('TR Confidential Cowork', 'ws-123-abc'),
+    'pi/tr-confidential-cowork-123-abc'
   )
   const target = worktreeTargetPath('/tmp/gui/worktrees', '/repo/My App', 'ws-123-abc')
   assert.match(target.replaceAll('\\', '/'), /\/tmp\/gui\/worktrees\/my-app\/my-app-ws-123-abc$/)

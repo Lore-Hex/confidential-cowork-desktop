@@ -339,7 +339,7 @@ test('fetchGalleryThemes returns valid entries with pinned first-party URLs', as
 })
 
 test('fetchGalleryThemes validates embedded theme content and metadata', async () => {
-  const embedded = { ...theme('Ocean'), author: 'Pi Desktop', description: 'Calm blues.' }
+  const embedded = { ...theme('Ocean'), author: 'TR Confidential Cowork', description: 'Calm blues.' }
   const themes = await fetchGalleryThemes(jsonFetch([
     { name: 'Ocean', kind: 'dark', file: 'themes/ocean.json', theme: embedded },
     // Invalid embedded theme: the entry survives without a preview.
@@ -349,7 +349,7 @@ test('fetchGalleryThemes validates embedded theme content and metadata', async (
   ]))
   assert.equal(themes.length, 3)
   assert.equal(themes[0].theme?.seeds.app, embedded.seeds.app)
-  assert.equal(themes[0].author, 'Pi Desktop')
+  assert.equal(themes[0].author, 'TR Confidential Cowork')
   assert.equal(themes[0].description, 'Calm blues.')
   assert.equal(themes[1].theme, undefined)
   assert.equal(themes[2].author, 'Someone')

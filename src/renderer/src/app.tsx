@@ -1,4 +1,5 @@
 import { Sidebar } from './components/sidebar'
+import { ConfidentialAccount } from './components/confidential-account'
 import { ChatPanel } from './components/chat-panel'
 import { StatusBar } from './components/status-bar'
 import { SettingsPanel } from './components/settings-panel'
@@ -93,6 +94,7 @@ export function App(): React.JSX.Element {
 
   return (
     <div className="relative flex h-screen flex-col bg-app text-primary">
+      <ConfidentialAccount />
       {isDraggingFolder && (
         <div
           className="pointer-events-none absolute inset-0 z-[100] flex items-center justify-center bg-app/80 backdrop-blur-sm"
@@ -115,7 +117,7 @@ export function App(): React.JSX.Element {
         <div className="flex shrink-0 items-center justify-center gap-3 bg-accent px-4 py-1.5 text-xs text-white">
           <ArrowUpCircle size={14} className="shrink-0" />
           <span>
-            Pi Desktop <strong>v{updateInfo.latestVersion}</strong> is available — you&apos;re on v{updateInfo.currentVersion}.
+            TR Confidential Cowork <strong>v{updateInfo.latestVersion}</strong> is available — you&apos;re on v{updateInfo.currentVersion}.
           </span>
           <button
             onClick={() => window.piDesktop.system.openExternal(updateInfo.url)}

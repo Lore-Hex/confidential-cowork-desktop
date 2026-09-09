@@ -14,8 +14,6 @@ import { registerThemeHandlers } from './ipc/theme-handlers'
 import { registerWorkspaceHandlers } from './ipc/workspace-handlers'
 import { registerPackageHandlers } from './ipc/package-handlers'
 import { registerSkillsMcpHandlers } from './ipc/skills-mcp-handlers'
-import { registerModelsConfigHandlers } from './ipc/models-config-handlers'
-import { registerCouncilHandlers } from './ipc/council-handlers'
 import { registerTagHandlers } from './ipc/tag-handlers'
 import { registerNotesHandlers } from './ipc/notes-handlers'
 import { registerFileHandlers } from './ipc/file-handlers'
@@ -57,8 +55,14 @@ export function registerIpcHandlers(
   registerWorkspaceHandlers(ctx)
   registerPackageHandlers(ctx)
   registerSkillsMcpHandlers(ctx)
-  registerModelsConfigHandlers(ctx)
-  registerCouncilHandlers(ctx)
+  for (const channel of [IPC_CHANNELS.MODELS_READ, IPC_CHANNELS.MODELS_WRITE,
+    IPC_CHANNELS.COUNCIL_RUN_CONSULTANTS, IPC_CHANNELS.COUNCIL_ARBITER]) {
+    ipcMain.handle(channel, (event) => {
+      assertTrustedSender(event)
+      throw new Error('External engines and custom provider configuration are disabled in Confidential Cowork.')
+    })
+  }
+  ipcMain.handle(IPC_CHANNELS.COUNCIL_DETECT, () => ({ agents: [] }))
   registerTagHandlers(ctx)
   registerNotesHandlers(ctx)
   registerFileHandlers(ctx)

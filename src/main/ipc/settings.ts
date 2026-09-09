@@ -13,6 +13,13 @@ import { existsSync } from 'fs'
 import { isObject } from './validation'
 import { appLog } from '../app-log'
 import type { IpcContext } from './context'
+import { COWORK_MODEL, COWORK_PROVIDER } from '../../shared/confidential'
+
+function pinSettings(value: AppSettings): AppSettings {
+  return { ...value, piEngine: 'pi', piExecutablePath: 'bundled', defaultArgs: [],
+    defaultProvider: COWORK_PROVIDER, defaultModel: COWORK_MODEL,
+    council: { ...value.council, enabled: false } }
+}
 
 // ─── App Settings Persistence ────────────────────────────────────────────────
 
@@ -32,7 +39,7 @@ export async function loadAppSettings(workspaceManager: WorkspaceManager): Promi
       if (merged.piEngine !== 'auto' && merged.piEngine !== 'pi' && merged.piEngine !== 'omp') {
         merged.piEngine = 'auto'
       }
-      return merged
+      return pinSettings(merged)
     }
   } catch {
     // Fall through to defaults
@@ -63,7 +70,7 @@ export async function saveAppSettings(settings: Partial<AppSettings>): Promise<v
     // Use defaults
   }
 
-  const merged = { ...existing, ...settings }
+  const merged = pinSettings({ ...existing, ...settings })
   try {
     await writeFile(settingsPath, JSON.stringify(merged, null, 2), 'utf-8')
   } catch (err) {

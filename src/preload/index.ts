@@ -132,6 +132,12 @@ interface PiDesktopAPI {
     cycleLevel(): Promise<unknown>
   }
 
+  account: {
+    status(): Promise<{ configured: boolean }>
+    save(key: string): Promise<{ configured: boolean }>
+    remove(): Promise<{ configured: boolean }>
+  }
+
   // Settings
   settings: {
     getAll(): Promise<AppSettings>
@@ -395,6 +401,11 @@ const api: PiDesktopAPI = {
     cycleLevel: () => ipcRenderer.invoke(IPC_CHANNELS.THINKING_CYCLE_LEVEL),
   },
 
+  account: {
+    status: () => ipcRenderer.invoke(IPC_CHANNELS.ACCOUNT_STATUS),
+    save: (key) => ipcRenderer.invoke(IPC_CHANNELS.ACCOUNT_SAVE, key),
+    remove: () => ipcRenderer.invoke(IPC_CHANNELS.ACCOUNT_REMOVE),
+  },
   settings: {
     getAll: () => ipcRenderer.invoke(IPC_CHANNELS.SETTINGS_GET_ALL),
     save: (settings) => ipcRenderer.invoke(IPC_CHANNELS.SETTINGS_SAVE, settings),

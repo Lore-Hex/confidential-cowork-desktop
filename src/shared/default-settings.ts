@@ -10,11 +10,11 @@ import { DEFAULT_SIDEBAR_WIDTH } from './sidebar-width'
  */
 export const DEFAULT_SETTINGS: AppSettings = {
   piExecutablePath: 'pi',
-  piEngine: 'auto',
+  piEngine: 'pi',
   defaultArgs: [],
   theme: 'dark',
-  defaultModel: null,
-  defaultProvider: null,
+  defaultModel: 'trustedrouter/confidential',
+  defaultProvider: 'trustedrouter',
   defaultCwd: null,
   fontSize: 16,
   terminalFontSize: 12,

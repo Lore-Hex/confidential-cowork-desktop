@@ -34,7 +34,7 @@ function walk(manager: PiRpcManager, root: number): number[] {
 test('a grandchild in its own process group is still found', { skip: IS_WINDOWS }, async () => {
   // Parent sleeps; child detaches into a NEW group, exactly like an OMP
   // subagent. setsid is what makes the group signal miss it.
-  const parent = spawn('sh', ['-c', 'setsid sleep 30 & sleep 30'], { detached: true, stdio: 'ignore' })
+  const parent = spawn(process.execPath, ['-e', "require('child_process').spawn('sleep', ['30'], {detached: true, stdio: 'ignore'}); setTimeout(() => {}, 30000)"], { detached: true, stdio: 'ignore' })
   try {
     assert.ok(parent.pid, 'parent must have a pid')
     await settle(400)
@@ -44,7 +44,7 @@ test('a grandchild in its own process group is still found', { skip: IS_WINDOWS 
 
     // A plain group kill leaves the detached grandchild behind. That is the bug.
     const escaped = found.filter((pid) => {
-      const sid = spawnSync('ps', ['-o', 'sid=', '-p', String(pid)], { encoding: 'utf-8' })
+      const sid = spawnSync('ps', ['-o', 'pgid=', '-p', String(pid)], { encoding: 'utf-8' })
       return sid.status === 0 && sid.stdout.trim() !== '' && Number(sid.stdout.trim()) !== parent.pid
     })
     assert.ok(escaped.length > 0, 'at least one descendant must have escaped the parent group')
@@ -57,7 +57,7 @@ test('a grandchild in its own process group is still found', { skip: IS_WINDOWS 
 })
 
 test('an escaped descendant is signalled directly and dies', { skip: IS_WINDOWS }, async () => {
-  const parent = spawn('sh', ['-c', 'setsid sleep 30 & sleep 30'], { detached: true, stdio: 'ignore' })
+  const parent = spawn(process.execPath, ['-e', "require('child_process').spawn('sleep', ['30'], {detached: true, stdio: 'ignore'}); setTimeout(() => {}, 30000)"], { detached: true, stdio: 'ignore' })
   assert.ok(parent.pid, 'parent must have a pid')
   await settle(400)
 

@@ -1,4 +1,19 @@
-# Pi Desktop
+# TR Confidential Cowork Desktop
+
+Graphical Pi Desktop with bundled TRPi and confidential TrustedRouter inference.
+This macOS alpha uses `trustedrouter/confidential` exclusively, with encrypted
+API-key storage, local conversation history, and explicit tool approvals.
+
+See [setup, privacy boundaries, and release gates](CONFIDENTIAL-COWORK.md).
+There is not yet a verified signed GUI download for this fork. Do not confuse
+the older TRPi terminal launcher with this desktop application.
+
+## Upstream Pi Desktop reference
+
+The original feature documentation below is retained for attribution and
+development reference. Engine switching, custom providers, and council planning
+are disabled in this confidential fork. Install instructions below refer to
+upstream, not to this app; use the setup guide above.
 
 A desktop GUI for the [Pi](https://pi.dev) and [oh-my-pi](https://github.com/can1357/oh-my-pi) coding agents. Chat, manage projects, browse files, run commands, and install packages in one window.
 

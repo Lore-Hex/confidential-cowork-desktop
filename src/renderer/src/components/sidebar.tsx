@@ -467,7 +467,7 @@ export function Sidebar(): React.JSX.Element {
           >
             <Home size={16} />
           </button>
-          <span className="text-sm font-medium text-primary">Pi Desktop</span>
+          <span className="text-sm font-medium text-primary">TR Confidential Cowork</span>
         </div>
         <button
           onClick={toggleSidebar}

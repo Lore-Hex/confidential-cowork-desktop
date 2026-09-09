@@ -935,14 +935,14 @@ export function SettingsPanel(): React.JSX.Element {
 
           <SettingsRow
             label="Run on Startup"
-            description="Automatically start Pi Desktop when you log in to your computer (takes effect in installed builds)"
+            description="Automatically start TR Confidential Cowork when you log in to your computer (takes effect in installed builds)"
           >
             <Toggle checked={runOnStartup} onChange={(v) => { setRunOnStartup(v); void applyImmediate({ runOnStartup: v }) }} />
           </SettingsRow>
 
           <SettingsRow
             label="Minimize to Tray on Close"
-            description="Keep Pi Desktop running in the system tray when you close the window instead of quitting (Windows and Linux)"
+            description="Keep TR Confidential Cowork running in the system tray when you close the window instead of quitting (Windows and Linux)"
           >
             <Toggle checked={minimizeToTrayOnClose} onChange={(v) => { setMinimizeToTrayOnClose(v); void applyImmediate({ minimizeToTrayOnClose: v }) }} />
           </SettingsRow>
@@ -1137,7 +1137,8 @@ function SettingsSection({
 }: {
   title: string
   children: React.ReactNode
-}): React.JSX.Element {
+}): React.JSX.Element | null {
+  if (['Agent Configuration', 'Multi-Agent Council Planning', 'Custom Models'].includes(title)) return null
   return (
     <div className="mb-8">
       <h2 className="mb-4 text-sm font-medium text-secondary">{title}</h2>

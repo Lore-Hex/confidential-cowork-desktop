@@ -40,7 +40,7 @@ export function resolveModelsFile(engine: AgentEngineKind, homeDir: string): Mod
     const name = OMP_MODELS_BASENAMES[0]
     return { dir, file: join(dir, name), name, format: 'yaml' }
   }
-  const dir = join(homeDir, '.pi', 'agent')
+  const dir = process.env.PI_CODING_AGENT_DIR || join(homeDir, '.pi', 'agent')
   return { dir, file: join(dir, PI_MODELS_BASENAME), name: PI_MODELS_BASENAME, format: 'json' }
 }
 

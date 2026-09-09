@@ -1,15 +1,15 @@
 {
-  "name": "pi-desktop",
-  "version": "0.1.7-alpha",
-  "description": "Desktop GUI frontend for the Pi coding agent",
+  "name": "tr-confidential-cowork-desktop",
+  "version": "0.2.0-alpha",
+  "description": "A graphical workspace with confidential TrustedRouter inference",
   "main": "out/main/index.js",
   "desktopName": "pi-desktop.desktop",
   "author": "Pi Desktop GUI Contributors",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/FaqFirebase/pi-desktop",
+  "homepage": "https://trustedrouter.com/confidential-cowork",
   "repository": {
     "type": "git",
-    "url": "https://github.com/FaqFirebase/pi-desktop"
+    "url": "https://github.com/Lore-Hex/confidential-cowork-desktop"
   },
   "keywords": [
     "pi",
@@ -91,6 +91,7 @@
     "eslint": "^10.6.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.7.0",
+    "playwright": "^1.63.0",
     "tailwindcss": "^4.1.7",
     "tsx": "^4.23.8",
     "typescript": "^5.8.3",
@@ -98,8 +99,8 @@
     "vite": "^6.3.5"
   },
   "build": {
-    "appId": "dev.pi.desktop-gui",
-    "productName": "Pi Desktop",
+    "appId": "com.trustedrouter.confidential-cowork.desktop",
+    "productName": "TR Confidential Cowork",
     "copyright": "Copyright 2026 Pi Desktop GUI Contributors. Licensed under the Apache License, Version 2.0.",
     "files": [
       "out/**/*",
@@ -128,7 +129,7 @@
       "synopsis": "Desktop GUI for the Pi coding agent",
       "description": "An Electron desktop application that provides a GUI frontend for the Pi coding agent.",
       "maintainer": "Pi Desktop GUI Contributors",
-      "artifactName": "Pi-Desktop-${version}-${os}-${arch}.${ext}"
+      "artifactName": "TR-Confidential-Cowork-${version}-${os}-${arch}.${ext}"
     },
     "mac": {
       "target": [
@@ -140,7 +141,7 @@
       "darkModeSupport": true,
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
-      "artifactName": "Pi-Desktop-${version}-${os}-${arch}.${ext}"
+      "artifactName": "TR-Confidential-Cowork-${version}-${os}-${arch}.${ext}"
     },
     "win": {
       "target": [
@@ -148,17 +149,17 @@
         "portable"
       ],
       "icon": "resources/icons/icon.ico",
-      "artifactName": "Pi-Desktop-${version}-${os}-${arch}.${ext}"
+      "artifactName": "TR-Confidential-Cowork-${version}-${os}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Pi Desktop",
+      "shortcutName": "TR Confidential Cowork",
       "installerIcon": "resources/icons/icon.ico",
       "uninstallerIcon": "resources/icons/icon.ico",
-      "artifactName": "Pi-Desktop-${version}-${os}-${arch}-setup.${ext}"
+      "artifactName": "TR-Confidential-Cowork-${version}-${os}-${arch}-setup.${ext}"
     }
   }
 }

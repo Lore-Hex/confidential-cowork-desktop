@@ -13,7 +13,7 @@ import {
   Play,
 } from 'lucide-react'
 import { useAppStore } from '../store'
-import piLogo from '../assets/pi-logo.svg'
+import piLogo from '../assets/cowork.png'
 import { formatGitStatus } from './review-rail'
 import { StatsPanel } from './stats-panel'
 import type { GitFileStatus, SessionListItem } from '../../../shared/ipc-contracts'
@@ -339,8 +339,8 @@ function HomeScreenInfo(): React.JSX.Element {
         <PiErrorBanner />
 
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={piLogo} alt="Pi Desktop" className="h-16 w-16" />
-          <h1 className="mt-4 text-2xl font-semibold text-primary">Pi Desktop</h1>
+          <img src={piLogo} alt="TR Confidential Cowork" className="h-16 w-16" />
+          <h1 className="mt-4 text-2xl font-semibold text-primary">TR Confidential Cowork</h1>
           <p className="mt-1 text-sm text-dim">Open a workspace or pick up where you left off.</p>
         </div>
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { mkdir, mkdtemp, readFile, writeFile, access } from 'fs/promises'
-import { existsSync } from 'fs'
+import { existsSync, realpathSync } from 'fs'
 import { spawnSync } from 'child_process'
 import { tmpdir } from 'os'
 import { join, resolve } from 'path'
@@ -148,7 +148,7 @@ function gitRepo(repo: string): (args: string[], cwd?: string) => string {
   }
   git(['init'])
   git(['config', 'user.email', 'pi-desktop@example.test'])
-  git(['config', 'user.name', 'Pi Desktop Tests'])
+  git(['config', 'user.name', 'TR Confidential Cowork Tests'])
   git(['add', '.'])
   git(['commit', '-m', 'initial'])
   return git
@@ -303,7 +303,7 @@ test('adopts an explicitly named leftover worktree without deleting it on close'
       taskPrompt: 'Continue work in feature/existing',
     })
 
-    assert.equal(adopted.path.replaceAll('\\', '/'), leftover.replaceAll('\\', '/'))
+    assert.equal(realpathSync(adopted.path), realpathSync(leftover))
     assert.equal(adopted.branch, 'feature/existing')
     assert.equal(adopted.managed, false)
     const result = await mgr.removeWorkspace(adopted.id)

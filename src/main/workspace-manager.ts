@@ -1,6 +1,6 @@
 import { dirname, basename, resolve } from 'path'
 import { readFile, writeFile, mkdir, rename, copyFile } from 'fs/promises'
-import { existsSync } from 'fs'
+import { existsSync, realpathSync } from 'fs'
 import { PiRpcManager } from './pi-rpc-manager'
 import { FileService } from './file-service'
 import type {
@@ -958,7 +958,9 @@ export class WorkspaceManager {
 
   /** Whether a checkout lives inside the worktree root this app owns. */
   private isManagedWorktreePath(path: string): boolean {
-    return isPathWithin(getGuiDataPath(MANAGED_WORKTREES_DIR), path)
+    try {
+      return isPathWithin(realpathSync(getGuiDataPath(MANAGED_WORKTREES_DIR)), realpathSync(path))
+    } catch { return false }
   }
 
   /**

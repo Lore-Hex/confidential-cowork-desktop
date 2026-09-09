@@ -3,7 +3,7 @@ import type { UpdateCheckResult } from '../../shared/ipc-contracts'
 import { IPC_CHANNELS } from '../../shared/ipc-contracts'
 import { appLog } from '../app-log'
 
-const UPDATE_REPO = 'FaqFirebase/pi-desktop'
+const UPDATE_REPO = 'Lore-Hex/confidential-cowork-desktop'
 const UPDATE_CHECK_TIMEOUT_MS = 8000
 
 interface GithubRelease {

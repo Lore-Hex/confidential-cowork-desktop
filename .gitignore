@@ -63,6 +63,7 @@ coverage/
 *.tsbuildinfo
 
 # Electron / packaging artifacts
+resources/runtime/
 *.dmg
 *.AppImage
 # AppImage extraction dir (created by `AppImage --appimage-extract`)

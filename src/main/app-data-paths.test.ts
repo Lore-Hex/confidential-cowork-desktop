@@ -16,24 +16,22 @@ import {
 } from './app-data-paths'
 
 test('getCanonicalUserDataDir appends the canonical dir name', () => {
-  assert.equal(getCanonicalUserDataDir('/home/test/.config'), '/home/test/.config/pi-desktop')
+  assert.equal(getCanonicalUserDataDir('/home/test/.config'), '/home/test/.config/tr-confidential-cowork-desktop')
   assert.equal(
     getCanonicalUserDataDir('/Users/test/Library/Application Support'),
-    '/Users/test/Library/Application Support/pi-desktop'
+    '/Users/test/Library/Application Support/tr-confidential-cowork-desktop'
   )
   assert.equal(
     getCanonicalUserDataDir('C:\\Users\\test\\AppData\\Roaming'),
-    'C:\\Users\\test\\AppData\\Roaming/pi-desktop'
+    'C:\\Users\\test\\AppData\\Roaming/tr-confidential-cowork-desktop'
   )
 })
 
-test('getLegacyGuiDataDirs lists home and electron legacy dirs', () => {
+test('legacy migration never imports upstream Pi profiles', () => {
   assert.deepEqual(
     getLegacyGuiDataDirs({ homeDir: '/home/test', appDataDir: '/home/test/.config' }),
     [
-      '/home/test/.pi-desktop-gui',
-      '/home/test/.config/PI Desktop',
-      '/home/test/.config/pi-desktop-gui',
+      '/home/test/.tr-confidential-cowork-desktop',
     ]
   )
 })
@@ -58,7 +56,7 @@ test('getGuiDataPath / getLegacyGuiDataPath resolve under the right root', () =>
   )
   assert.equal(
     getLegacyGuiDataPath('settings.json', { homeDir: '/home/test' }),
-    '/home/test/.pi-desktop-gui/settings.json'
+    '/home/test/.tr-confidential-cowork-desktop/settings.json'
   )
   const userDataDir = '/home/test/.config/pi-desktop'
   for (const fileName of GUI_DATA_FILES) {
@@ -71,7 +69,7 @@ test('migrateLegacyGuiData copies legacy files but never overwrites existing', a
   const homeDir = join(tmp, 'home')
   const appDataDir = join(tmp, 'config')
   const userDataDir = getCanonicalUserDataDir(appDataDir)
-  const legacySettings = join(appDataDir, 'pi-desktop-gui', 'settings.json')
+  const legacySettings = join(homeDir, '.tr-confidential-cowork-desktop', 'settings.json')
   const targetSettings = getGuiDataPath('settings.json', { userDataDir })
 
   await mkdir(join(legacySettings, '..'), { recursive: true })
@@ -86,5 +84,5 @@ test('migrateLegacyGuiData copies legacy files but never overwrites existing', a
   await migrateLegacyGuiData({ homeDir, userDataDir })
   assert.equal(await readFile(targetSettings, 'utf-8'), '{"theme":"current"}')
 
-  assert.equal(existsSync(join(appDataDir, 'pi-desktop-gui')), true)
+  assert.equal(existsSync(join(homeDir, '.tr-confidential-cowork-desktop')), true)
 })

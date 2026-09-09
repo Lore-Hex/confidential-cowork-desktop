@@ -57,12 +57,12 @@ function createTray(): boolean {
   try {
     const image = nativeImage.createFromPath(deps.iconPath)
     tray = new Tray(image)
-    tray.setToolTip('Pi Desktop')
+    tray.setToolTip('TR Confidential Cowork')
 
     const menu = Menu.buildFromTemplate([
-      { label: 'Show Pi Desktop', click: () => showWindow() },
+      { label: 'Show TR Confidential Cowork', click: () => showWindow() },
       { type: 'separator' },
-      { label: 'Quit Pi Desktop', click: () => deps?.quit() },
+      { label: 'Quit TR Confidential Cowork', click: () => deps?.quit() },
     ])
     // setContextMenu is the primary interface on Linux, where left-click
     // activation is unreliable across desktop environments.
@@ -133,7 +133,7 @@ function warnNoTrayOnce(): void {
   if (Notification.isSupported()) {
     new Notification({
       title: 'System tray unavailable',
-      body: 'This desktop has no system tray, so Pi Desktop will close normally instead of minimizing to the tray.',
+      body: 'This desktop has no system tray, so TR Confidential Cowork will close normally instead of minimizing to the tray.',
       ...(deps?.iconPath ? { icon: deps.iconPath } : {}),
     }).show()
   }
@@ -202,7 +202,7 @@ export function notifyFirstHide(): void {
   deps?.onHintShown()
   if (Notification.isSupported()) {
     new Notification({
-      title: 'Pi Desktop is still running',
+      title: 'TR Confidential Cowork is still running',
       body: 'The window was hidden to the system tray. Click the tray icon to reopen it, or use Quit to exit.',
       ...(deps?.iconPath ? { icon: deps.iconPath } : {}),
     }).show()
