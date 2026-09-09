@@ -5,6 +5,7 @@ import { _electron as electron } from 'playwright'
 import { mkdtemp, rm, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { URL } from 'node:url'
 import assert from 'node:assert/strict'
 
 const data = await mkdtemp(join(tmpdir(), 'cowork-gui-smoke-'))
