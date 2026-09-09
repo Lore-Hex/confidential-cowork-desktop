@@ -9,7 +9,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 const AGENT_LABEL: Record<string, string> = {
-  pi: 'Pi',
+  pi: 'TRCC',
   claude: 'Claude',
   codex: 'Codex',
 }

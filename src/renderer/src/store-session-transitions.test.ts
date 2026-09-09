@@ -4,7 +4,7 @@ import type { PiExtensionUiRequest, SessionDeleteResult, SessionListItem, Sessio
 import type { PreviewTarget } from './store'
 
 // Each recorded call is appended to `calls`, so tests can assert both that a
-// session change reached Pi and that nothing reached Pi when it was declined.
+// session change reached TRCC and that nothing reached TRCC when it was declined.
 const calls: string[] = []
 let switchResult: { success?: boolean; error?: string } | SessionRuntimeInfo | null = { success: true }
 // Non-null makes the stubbed pi.getStatus reject, simulating a main-side
@@ -384,13 +384,13 @@ test('an active runtime error ends the session loading state', () => {
     sessionId: null,
     status: 'error',
     pid: null,
-    error: 'Pi failed to start',
+    error: 'TRCC failed to start',
     activity: 'failed',
     active: true,
   })
 
   assert.equal(useAppStore.getState().sessionLoading, false)
-  assert.equal(useAppStore.getState().piError, 'Pi failed to start')
+  assert.equal(useAppStore.getState().piError, 'TRCC failed to start')
 })
 
 test('closed runtime events remove session tabs from renderer state', () => {
@@ -448,7 +448,7 @@ test('confirmSessionChange passes straight through when no turn is streaming', a
   const proceed = await useAppStore.getState().confirmSessionChange('switch')
 
   assert.equal(proceed, true)
-  assert.equal(useAppStore.getState().confirmRequest, null, 'an idle Pi must not raise a dialog')
+  assert.equal(useAppStore.getState().confirmRequest, null, 'an idle TRCC must not raise a dialog')
 })
 
 test('confirmSessionChange labels the dialog for the action being confirmed', async () => {
@@ -489,17 +489,17 @@ test('switching sessions clears the local streaming state', async () => {
   assert.deepEqual(state.pendingSteering, [], 'the old queue counters must not carry over')
 })
 
-test('switchSession does not warn when Pi is idle', async () => {
+test('switchSession does not warn when TRCC is idle', async () => {
   await useAppStore.getState().switchSession(SESSION_PATH)
 
   assert.equal(useAppStore.getState().confirmRequest, null)
   assert.equal(calls[0], `switch:${SESSION_PATH}`)
 })
 
-test('switchSession clears streaming state even when Pi refuses the switch', async () => {
+test('switchSession clears streaming state even when TRCC refuses the switch', async () => {
   enterStreamingState()
   answerConfirm(true)
-  switchResult = { success: false, error: 'Pi not running. Start Pi first.' }
+  switchResult = { success: false, error: 'TRCC not running. Start TRCC first.' }
 
   await useAppStore.getState().switchSession(SESSION_PATH)
 
@@ -507,7 +507,7 @@ test('switchSession clears streaming state even when Pi refuses the switch', asy
   assert.equal(state.isStreaming, false, 'a refused switch must still leave the composer usable')
   assert.equal(calls.includes('getMessages'), false, 'a refused switch must not reload history')
   assert.equal(
-    state.messages.some((m) => m.role === 'system' && m.content.includes('Pi not running')),
+    state.messages.some((m) => m.role === 'system' && m.content.includes('TRCC not running')),
     true,
     'the refusal reason must be shown to the user'
   )
@@ -545,14 +545,14 @@ test('forkFrom is gated by the same warning', async () => {
 
   await useAppStore.getState().forkFrom(FORK_ENTRY_ID)
 
-  assert.deepEqual(calls, [], 'a declined fork must not reach Pi')
+  assert.deepEqual(calls, [], 'a declined fork must not reach TRCC')
   assert.equal(useAppStore.getState().isStreaming, true)
 })
 
-// Workspace switches are safe because each workspace owns a separate Pi
+// Workspace switches are safe because each workspace owns a separate TRCC
 // process. Switching tabs must not block on, abort, or warn about the turn that
 // remains active in the background.
-test('switchWorkspace leaves a running Pi in the background without warning', async () => {
+test('switchWorkspace leaves a running TRCC in the background without warning', async () => {
   enterStreamingState()
 
   const proceed = await useAppStore.getState().switchWorkspace(WORKSPACE_ID)
@@ -562,7 +562,7 @@ test('switchWorkspace leaves a running Pi in the background without warning', as
   assert.equal(useAppStore.getState().isStreaming, false)
 })
 
-test('switchWorkspace does not warn when Pi is idle', async () => {
+test('switchWorkspace does not warn when TRCC is idle', async () => {
   const proceed = await useAppStore.getState().switchWorkspace(WORKSPACE_ID)
 
   assert.equal(proceed, true)
@@ -575,7 +575,7 @@ test('cloneBranch is gated by the same warning', async () => {
 
   await useAppStore.getState().cloneBranch()
 
-  assert.deepEqual(calls, [], 'a declined clone must not reach Pi')
+  assert.deepEqual(calls, [], 'a declined clone must not reach TRCC')
   assert.equal(useAppStore.getState().isStreaming, true)
 })
 
@@ -681,7 +681,7 @@ test('dismissing a notify toast answers it and leaves the dialog slot alone', ()
   assert.deepEqual(
     calls,
     [`respondInput:${EXTENSION_NOTIFY.id}`],
-    'toast dismissal keeps sending the empty-input response Pi ignores'
+    'toast dismissal keeps sending the empty-input response TRCC ignores'
   )
 })
 
@@ -691,8 +691,8 @@ test('pending prompt counts land in state and sum over non-active workspaces', (
   assert.deepEqual(useAppStore.getState().pendingPromptCounts, { 'ws-2': 2, 'ws-9': 1 })
   assert.equal(countPromptsWaitingElsewhere({ 'ws-2': 2, 'ws-9': 1 }, 'ws-2'), 1)
   assert.equal(countPromptsWaitingElsewhere({ 'ws-2': 2, 'ws-9': 1 }, null), 3)
-  assert.equal(formatPromptsWaiting(1), '1 Pi prompt waiting')
-  assert.equal(formatPromptsWaiting(3), '3 Pi prompts waiting')
+  assert.equal(formatPromptsWaiting(1), '1 TRCC prompt waiting')
+  assert.equal(formatPromptsWaiting(3), '3 TRCC prompts waiting')
 })
 
 test('removing the workspace flushes prompts only when a new one is promoted', async () => {
@@ -800,7 +800,7 @@ test('openFolderAsWorkspace switches when the dropped folder is an existing othe
   assert.equal(
     calls.includes(`setActiveWorkspace:${WORKSPACE_TWO.id}`),
     true,
-    'must route through switchWorkspace so messages and Pi status resync'
+    'must route through switchWorkspace so messages and TRCC status resync'
   )
   assert.deepEqual(
     useAppStore.getState().messages,
@@ -820,7 +820,7 @@ test('openFolderAsWorkspace switches when the dropped folder is an existing othe
   )
 })
 
-test('activating an idle workspace shows the empty view without starting Pi', async () => {
+test('activating an idle workspace shows the empty view without starting TRCC', async () => {
   workspaceListResult = [WORKSPACE_ONE, WORKSPACE_TWO]
   activeWorkspaceResult = WORKSPACE_ONE
   useAppStore.setState({
@@ -967,7 +967,7 @@ test('openFolderAsWorkspace skips switch when the dropped folder is already acti
 })
 
 // A dropped folder that is already registered should use the normal background-safe
-// workspace switch rather than asking the user to stop the old Pi turn.
+// workspace switch rather than asking the user to stop the old TRCC turn.
 test('dropping an existing workspace switches without a streaming confirmation', async () => {
   workspaceListResult = [WORKSPACE_ONE, WORKSPACE_TWO]
   activeWorkspaceResult = WORKSPACE_ONE
@@ -1335,7 +1335,7 @@ test('a duplicate-path create routes through the full workspace switch', async (
   )
 })
 
-test('a duplicate-path create switches while Pi keeps working in the background', async () => {
+test('a duplicate-path create switches while TRCC keeps working in the background', async () => {
   workspaceListResult = [WORKSPACE_ONE, WORKSPACE_TWO]
   activeWorkspaceResult = WORKSPACE_ONE
   useAppStore.setState({
@@ -1423,7 +1423,7 @@ test('an accepted active-folder change closes the preview', async () => {
   assert.equal(useAppStore.getState().editorDirty, false)
 })
 
-test('changing the active folder warns while Pi is streaming', async () => {
+test('changing the active folder warns while TRCC is streaming', async () => {
   activeWorkspaceResult = WORKSPACE_ONE
   useAppStore.setState({ activeWorkspace: WORKSPACE_ONE })
   enterStreamingState()
@@ -1439,7 +1439,7 @@ test('changing the active folder warns while Pi is streaming', async () => {
   assert.equal(useAppStore.getState().isStreaming, true)
 })
 
-test('an accepted active-folder change restarts a running Pi', async () => {
+test('an accepted active-folder change restarts a running TRCC', async () => {
   activeWorkspaceResult = WORKSPACE_ONE
   useAppStore.setState({ activeWorkspace: WORKSPACE_ONE, piStatus: 'running' })
 
@@ -1449,11 +1449,11 @@ test('an accepted active-folder change restarts a running Pi', async () => {
   assert.equal(
     calls.includes('pi.restart'),
     true,
-    "Pi's cwd is bound at spawn — without a restart it keeps working in the old folder"
+    "TRCC's cwd is bound at spawn — without a restart it keeps working in the old folder"
   )
 })
 
-test('a stopped Pi is not restarted by a folder change', async () => {
+test('a stopped TRCC is not restarted by a folder change', async () => {
   activeWorkspaceResult = WORKSPACE_ONE
   useAppStore.setState({ activeWorkspace: WORKSPACE_ONE, piStatus: 'stopped' })
 
@@ -1542,7 +1542,7 @@ test('the cross-workspace open flow loads the clicked session end to end', async
     activeWorkspace: WORKSPACE_ONE,
     workspaces: [WORKSPACE_ONE, WORKSPACE_TWO],
   })
-  // The target workspace's Pi resumes straight onto the very session the user
+  // The target workspace's TRCC resumes straight onto the very session the user
   // clicked (startPi refreshes sessionState to it) — the arrangement whose
   // refresh/fast-path race used to eat the click and leave an empty chat.
   sessionStateResult = sessionStateWith(SESSION_PATH)
@@ -1842,7 +1842,7 @@ test('a mid-turn message_end keeps the attach armed and restores the indicator',
 })
 
 test('an activity broadcast arms the attach for a renderer that booted mid-turn', async () => {
-  // Ctrl+R mid-turn: the fresh renderer is idle while Pi still streams.
+  // Ctrl+R mid-turn: the fresh renderer is idle while TRCC still streams.
   workspaceListResult = [WORKSPACE_TWO]
   activeWorkspaceResult = WORKSPACE_TWO
   useAppStore.setState({ activeWorkspace: WORKSPACE_TWO, workspaces: [WORKSPACE_TWO] })

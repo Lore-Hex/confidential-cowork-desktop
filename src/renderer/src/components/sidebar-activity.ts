@@ -21,7 +21,7 @@ export function workspaceActivityIndicator(
 ): ActivityIndicator | null {
   switch (activity?.state) {
     case 'working':
-      return { colorClass: 'bg-accent', pulse: true, label: 'Pi is working' }
+      return { colorClass: 'bg-accent', pulse: true, label: 'TRCC is working' }
     case 'completed':
       return { colorClass: 'bg-success', pulse: false, label: 'Finished in the background' }
     case 'failed':

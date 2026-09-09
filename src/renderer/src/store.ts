@@ -93,7 +93,7 @@ export interface CouncilRunState {
   reason?: string
   // The arbiter's consensus plan text: streamed live during 'merging', then the
   // final plan shown at 'awaiting-approval'. Produced by an isolated read-only
-  // Pi subprocess, so untrusted consultant output never reaches the live session.
+  // TRCC subprocess, so untrusted consultant output never reaches the live session.
   consensus?: string
 }
 
@@ -116,7 +116,7 @@ export interface ConfirmRequest extends ConfirmOptions {
 export type SessionChangeAction = 'switch' | 'new' | 'fork' | 'clone' | 'workspace' | 'changeFolder'
 
 const discardWarning = (verb: string): string =>
-  `Pi has not finished responding in this session. ${verb} stops it: whatever Pi already wrote ` +
+  `TRCC has not finished responding in this session. ${verb} stops it: whatever TRCC already wrote ` +
   'to the session is kept, but the rest of the response — including any tool calls still ' +
   'running — is discarded.'
 
@@ -126,21 +126,21 @@ const SESSION_CHANGE_PROMPTS: Record<SessionChangeAction, { message: string; con
   fork: { message: discardWarning('Forking this session'), confirmLabel: 'Fork anyway' },
   clone: { message: discardWarning('Cloning this branch'), confirmLabel: 'Clone anyway' },
   // Leaving a workspace does not tear the session down — each workspace has its
-  // own Pi process and nothing stops it. The turn keeps running in the
+  // own TRCC process and nothing stops it. The turn keeps running in the
   // background: its output lands in the session file and is restored on
   // switch-back, and any blocking prompt it raises while the user is away is
   // held by the main process and re-shown when this workspace is active again.
   workspace: {
     message:
-      'Pi has not finished responding in this session. It keeps working after you switch: ' +
+      'TRCC has not finished responding in this session. It keeps working after you switch: ' +
       'the response is saved to the session and restored when you come back, and any ' +
-      'prompt Pi raises while you are away is held and shown on your return.',
+      'prompt TRCC raises while you are away is held and shown on your return.',
     confirmLabel: 'Switch anyway',
   },
-  // Unlike a workspace switch, this restarts the workspace's Pi (its working
+  // Unlike a workspace switch, this restarts the workspace's TRCC (its working
   // directory is bound at spawn), so the turn does not survive in the background.
   changeFolder: {
-    message: discardWarning('Changing the project folder restarts Pi, which'),
+    message: discardWarning('Changing the project folder restarts TRCC, which'),
     confirmLabel: 'Change anyway',
   },
 }
@@ -157,9 +157,9 @@ export function countPromptsWaitingElsewhere(
   return total
 }
 
-/** Badge/status label for held prompts, e.g. "2 Pi prompts waiting". */
+/** Badge/status label for held prompts, e.g. "2 TRCC prompts waiting". */
 export function formatPromptsWaiting(count: number): string {
-  return `${count} Pi prompt${count === 1 ? '' : 's'} waiting`
+  return `${count} TRCC prompt${count === 1 ? '' : 's'} waiting`
 }
 
 function councilErrorMessage(error: unknown): string {
@@ -195,9 +195,9 @@ function idleTurnState(): Pick<
 }
 
 /**
- * Whether a workspace's Pi is reachable right now.
+ * Whether a workspace's TRCC is reachable right now.
  *
- * Only the runtime main marked active backs that workspace's Pi manager, so a
+ * Only the runtime main marked active backs that workspace's TRCC manager, so a
  * sibling still running in the background says nothing about whether a prompt
  * can be delivered. Reading any runtime here reported a live workspace whose
  * active runtime was stopped, which skipped the lazy start and lost the
@@ -215,7 +215,7 @@ function workspaceHasLivePi(
 // ─── Store Shape ─────────────────────────────────────────────────────────────
 
 interface AppState {
-  // Pi process
+  // TRCC process
   piStatus: PiProcessStatus
   /** Non-null only while piStatus is 'starting'. */
   piStartupPhase: PiStartupPhase | null
@@ -228,7 +228,7 @@ interface AppState {
   sessionState: SessionState | null
   sessionStats: SessionStats | null
   sessionList: SessionListItem[]
-  // Live Pi runtimes keyed by runtime id. Several can share one project cwd.
+  // Live TRCC runtimes keyed by runtime id. Several can share one project cwd.
   sessionRuntimes: Record<string, SessionRuntimeInfo>
   activeSessionRuntimeId: string | null
   forkMessages: ForkPoint[]
@@ -267,7 +267,7 @@ interface AppState {
   // toggle flips it live.
   sessionsScope: 'all' | 'current'
   workflowPanelOpen: boolean
-  // When set, the workflow navigator only lists runs recorded for this Pi
+  // When set, the workflow navigator only lists runs recorded for this TRCC
   // session id (run.sessionId). null = no session scope.
   workflowPanelFilter: string | null
   // Project/workspace scope for the sidebar Activity entry. null = global.
@@ -383,7 +383,7 @@ interface AppState {
   // Machine-derived tags for sessions the user hasn't tagged (sessionId → tag)
   autoTags: Record<string, string>
 
-  // Archived sessions (GUI-only registry — Pi has no archive concept)
+  // Archived sessions (GUI-only registry — TRCC has no archive concept)
   archivedSessions: Record<string, number>
   showArchived: boolean
 
@@ -408,7 +408,7 @@ interface AppState {
 }
 
 interface AppActions {
-  // Pi lifecycle
+  // TRCC lifecycle
   startPi: (options?: Record<string, unknown>) => Promise<void>
   stopPi: () => Promise<void>
   restartPi: (options?: Record<string, unknown>) => Promise<void>
@@ -523,7 +523,7 @@ interface AppActions {
   openFolderAsWorkspace: (folderPath: string) => Promise<boolean>
   /**
    * Resolves false when the editor discard was declined or the switch failed.
-   * Workspace tabs keep their Pi processes running in the background.
+   * Workspace tabs keep their TRCC processes running in the background.
    * Never spawns a process. awaitingSession: a switchSession follows
    * immediately — hold the loading state instead of flashing the empty
    * new-session view in between.
@@ -625,9 +625,9 @@ function normalizePiCommands(raw: unknown): PiCommand[] {
 let sessionLoadGeneration = 0
 
 /**
- * Texts of prompts this GUI just sent to Pi, awaiting their echo on the RPC
- * event stream. Pi emits a `message_start` for every user message added to
- * the session — both ours and ones injected inside the Pi process by
+ * Texts of prompts this GUI just sent to TRCC, awaiting their echo on the RPC
+ * event stream. TRCC emits a `message_start` for every user message added to
+ * the session — both ours and ones injected inside the TRCC process by
  * extensions (e.g. pi-nvim's socket bridge). Externally injected prompts must
  * be rendered from that event or they never appear in the thread; our own
  * prompts must be skipped, since sendPrompt already adds the bubble locally
@@ -661,7 +661,7 @@ let pendingSwitchPath: string | null = null
 let switchCoalesceTimer: ReturnType<typeof setTimeout> | null = null
 /** Resolve for the in-flight coalesce wait — invoked immediately when superseded. */
 let switchCoalesceResolve: (() => void) | null = null
-// Only one get_messages/switch pipeline at a time (Pi + IPC can't keep up).
+// Only one get_messages/switch pipeline at a time (TRCC + IPC can't keep up).
 let switchPipeline: Promise<void> = Promise.resolve()
 
 // Attach backfills ride the same pipeline as session switches so their
@@ -688,7 +688,7 @@ let sessionListRefreshTimer: ReturnType<typeof setTimeout> | null = null
  * another. None of those go through switchWorkspace, so the renderer has to
  * resync the extension-UI surfaces here or a prompt held for the workspace now
  * on screen stays invisible — the badge counts other workspaces only — and its
- * Pi turn blocks forever.
+ * TRCC turn blocks forever.
  *
  * The stale dialog is cleared WITHOUT answering: main retains the request and
  * replays it on switch-back, while a synthesized deny would hard-block the tool
@@ -724,7 +724,7 @@ function adoptMainSideActivation(
 
   void window.piDesktop.ui.flushPendingPrompts(active.id)
   // A main-side activation is used by workspace removal and first-workspace
-  // creation, neither of which goes through switchWorkspace's normal Pi start.
+  // creation, neither of which goes through switchWorkspace's normal TRCC start.
   // Start the promoted workspace when there was a previous active workspace;
   // the first-workspace open flow starts it through its regular switch path.
   if (previousActiveId !== null) {
@@ -798,7 +798,7 @@ interface ArbiterStepBase {
 }
 
 /**
- * Drive one arbiter round (merge or revise) through the isolated read-only Pi
+ * Drive one arbiter round (merge or revise) through the isolated read-only TRCC
  * subprocess, streaming its output live into councilRun.consensus. Returns the
  * final plan text, or an error string if the arbiter failed. Callers own the
  * resulting phase transition.
@@ -920,7 +920,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
 
   lineage: [],
 
-  // ─── Pi Lifecycle ─────────────────────────────────────────────────────
+  // ─── TRCC Lifecycle ─────────────────────────────────────────────────────
 
   startPi: async (options) => {
     // Don't start if already running
@@ -1008,7 +1008,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
     }
     if (trimmed.startsWith('/workflows run ')) get().setWorkflowPanelOpen(true)
 
-    // Navigation never spawns Pi; the first prompt does. startPi applies the
+    // Navigation never spawns TRCC; the first prompt does. startPi applies the
     // resume preference, so a previously-used project continues its last
     // conversation; a fresh one gets a new session.
     if (get().piStatus !== 'running') {
@@ -1048,7 +1048,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
           ? buildPlanningPrompt(message)
           : message
         // Record the text actually sent (plan mode wraps it), not the text
-        // displayed — Pi's message_start echo carries the sent form.
+        // displayed — TRCC's message_start echo carries the sent form.
         recordLocalEcho(prompt)
         await window.piDesktop.commands.prompt(prompt, options)
       }
@@ -1157,7 +1157,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
         return
       }
 
-      // The arbiter runs in an isolated read-only Pi subprocess. Consultant plans
+      // The arbiter runs in an isolated read-only TRCC subprocess. Consultant plans
       // are untrusted input, so they are never fed to the live (writable) session —
       // only the vetted consensus plan is, and only after the user approves it.
       const merged = await runArbiterStep(
@@ -1219,7 +1219,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
 
   // Gate destructive actions that still replace or discard work in the active
   // runtime. Session navigation itself is deliberately not included: every
-  // session owns a separate Pi process, so leaving it running is safe.
+  // session owns a separate TRCC process, so leaving it running is safe.
   //
   // Must be consulted BEFORE anything calls clearMessages(): that resets
   // `isStreaming`, which is the signal this gate reads.
@@ -1227,7 +1227,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
     if (!get().isStreaming) return true
     const { message, confirmLabel } = SESSION_CHANGE_PROMPTS[action]
     return get().requestConfirm({
-      title: 'Pi is still working',
+      title: 'TRCC is still working',
       message,
       confirmLabel,
       cancelLabel: 'Keep working',
@@ -1242,7 +1242,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
   createNewSession: async () => {
     const gen = ++sessionLoadGeneration
     try {
-      // A new session owns a new Pi process. Never stop or warn about the
+      // A new session owns a new TRCC process. Never stop or warn about the
       // session the user is leaving; it continues working in the background.
       const result = await window.piDesktop.session.createNew() as SessionRuntimeInfo | { success?: boolean; error?: string } | null
       if (gen !== sessionLoadGeneration) return
@@ -1264,7 +1264,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
         sessionStats: null,
         // A new session has no history to wait for. Show the empty chat
         // immediately; the runtime event hydrates its generated session path
-        // when Pi is ready, while piStatus still communicates startup.
+        // when TRCC is ready, while piStatus still communicates startup.
         sessionLoading: false,
         ...(runtime ? {
           activeSessionRuntimeId: runtime.runtimeId,
@@ -1275,7 +1275,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
         } : {}),
       })
       // The runtime start is intentionally asynchronous. Its runtime event
-      // hydrates this empty chat once Pi is ready.
+      // hydrates this empty chat once TRCC is ready.
       scheduleSessionListRefresh(get)
     } catch (err) {
       if (gen !== sessionLoadGeneration) return
@@ -1361,7 +1361,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
     if (runtime.activity === 'working' || runtime.activity === 'needs-approval') {
       const confirmed = await get().requestConfirm({
         title: 'Close session tab?',
-        message: 'Pi is still working in this session. Closing the tab stops its runtime; saved messages remain available from Sessions.',
+        message: 'TRCC is still working in this session. Closing the tab stops its runtime; saved messages remain available from Sessions.',
         confirmLabel: 'Close tab',
         cancelLabel: 'Keep working',
         danger: true,
@@ -1449,7 +1449,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
     const run = async (): Promise<void> => {
       if (gen !== sessionLoadGeneration || pendingSwitchPath !== path) return
       try {
-        // Binding a different session is safe: its Pi process continues in the
+        // Binding a different session is safe: its TRCC process continues in the
         // background. Render the new target immediately; only hydration waits.
         set({
           sessionLoading: true,
@@ -1678,7 +1678,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
   setSessionName: async (name) => {
     try {
       await window.piDesktop.session.setName(name)
-      // No manual refresh: Pi emits `session_info_changed` after setting the
+      // No manual refresh: TRCC emits `session_info_changed` after setting the
       // name, and handlePiEvent applies it to the Current Session panel and the
       // Recent row — the same path used by auto-title extensions.
     } catch {
@@ -1716,7 +1716,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
   setModel: async (provider, modelId) => {
     try {
       await window.piDesktop.model.set(provider, modelId)
-      // Remember for next Pi start / home composer (settings defaults).
+      // Remember for next TRCC start / home composer (settings defaults).
       try {
         const updated = await window.piDesktop.settings.save({
           defaultProvider: provider,
@@ -1919,7 +1919,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
       case 'message_start': {
         // User messages can enter the session without passing through this
         // GUI — pi-nvim and other socket/extension bridges inject prompts
-        // directly inside the Pi process. Render those here, or the thread
+        // directly inside the TRCC process. Render those here, or the thread
         // shows only the assistant's replies. Our own prompts arrive on this
         // event too, but sendPrompt already rendered them at send time, so a
         // matching pending echo means skip. Assistant-role message_start is
@@ -2243,7 +2243,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
   dismissExtensionNotify: () => {
     const { extensionNotify } = get()
     if (!extensionNotify) return
-    // Pi ignores responses to unknown ids, so answering a fire-and-forget
+    // TRCC ignores responses to unknown ids, so answering a fire-and-forget
     // notify is harmless — and it must never touch the dialog slot.
     window.piDesktop.ui.respondInput(extensionNotify.id, '')
     set({ extensionNotify: null })
@@ -2304,9 +2304,9 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
       } : {}),
     }))
     // A newly-created session is intentionally empty, so its renderer stays
-    // in sessionLoading until Pi reports the generated session path. Hydrate
+    // in sessionLoading until TRCC reports the generated session path. Hydrate
     // that expected active runtime even though loading is still true; the old
-    // guard made New Session look stuck forever after Pi was already ready.
+    // guard made New Session look stuck forever after TRCC was already ready.
     const current = get()
     if (
       runtime.active &&
@@ -2356,13 +2356,13 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
       if (!status.hasWorkspaceRules || status.acknowledged || !status.workspacePath) return
 
       if (status.hasAllowRules && !status.trusted) {
-        // The repo defines allow rules that would let Pi skip permission prompts.
+        // The repo defines allow rules that would let TRCC skip permission prompts.
         // They stay inert until the user explicitly trusts this workspace.
         const trust = await get().requestConfirm({
           title: 'Trust this workspace?',
           message:
             'This workspace defines permission rules (.pi-desktop/permission-rules.json) with allow ' +
-            'rules that would let Pi skip confirmation prompts. They are ignored until you trust this ' +
+            'rules that would let TRCC skip confirmation prompts. They are ignored until you trust this ' +
             'workspace; its deny rules always apply. Only trust workspaces from a source you trust.',
           confirmLabel: 'Trust workspace',
           cancelLabel: 'Keep untrusted',
@@ -2375,13 +2375,13 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
           title: 'Workspace permission rules',
           message:
             'This workspace defines its own permission rules (.pi-desktop/permission-rules.json). ' +
-            'Its deny rules restrict Pi while you work here; your global rules apply otherwise.',
+            'Its deny rules restrict TRCC while you work here; your global rules apply otherwise.',
           confirmLabel: 'OK',
           cancelLabel: 'Dismiss',
         })
       }
 
-      // Acknowledge so the prompt does not fire on every Pi start. Fetch fresh
+      // Acknowledge so the prompt does not fire on every TRCC start. Fetch fresh
       // settings rather than trusting the possibly-stale store snapshot, so a
       // concurrent settings save elsewhere can't be clobbered by an ack list
       // built from data that predates it.
@@ -2394,7 +2394,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
         set({ settings: updated })
       }
     } catch {
-      // Non-fatal: the warning tries again on the next Pi start.
+      // Non-fatal: the warning tries again on the next TRCC start.
     }
   },
 
@@ -2488,7 +2488,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
         return false
       }
       // Re-drop / re-open of the current project: nothing to switch, just make
-      // sure the chat is on screen and Pi is up.
+      // sure the chat is on screen and TRCC is up.
       const active = get().activeWorkspace
       if (active && pathsEqual(active.path, folderPath)) {
         get().setCurrentView('chat')
@@ -2525,7 +2525,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
   // Instant navigation: committing the project pointer never spawns a
   // process. A workspace with a live runtime shows that session right away
   // (the process is already up — only history hydrates); anything else shows
-  // the empty new-session view immediately. Pi starts lazily on first prompt.
+  // the empty new-session view immediately. TRCC starts lazily on first prompt.
   activateWorkspace: async (workspaceId, options) => {
     if (get().activeWorkspace?.id === workspaceId) return true
     if (!options?.skipDirtyConfirm && !(await get().confirmDiscardEditorChanges())) return false
@@ -2584,7 +2584,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
     // workspace the user never actually switched to.
     let switchCommitted = false
     try {
-      // Workspace switches are safe: the old workspace's Pi process keeps
+      // Workspace switches are safe: the old workspace's TRCC process keeps
       // running and the activity tracker continues to observe it. Only the
       // editor buffer needs a confirmation because it cannot follow the path.
       // The editor buffer belongs to the workspace being left, and the new
@@ -2633,7 +2633,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
         await get().reloadActiveSession({ refreshList: false })
         // A turn may already be running here (that is what the sidebar dot
         // advertised). The reload above only shows persisted messages, so
-        // without this the chat looks idle while Pi is mid-response. Show the
+        // without this the chat looks idle while TRCC is mid-response. Show the
         // working indicator and mark the attach so the next turn boundary
         // backfills from the session (the stream buffers missed the prefix).
         const activity = get().workspaceActivity[workspaceId]?.state
@@ -2642,7 +2642,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
         }
       } else if (get().piStatus !== 'running') {
         // Idle workspace: the empty new-session view renders instantly. No
-        // spinner, no process — Pi starts when the first prompt is sent.
+        // spinner, no process — TRCC starts when the first prompt is sent.
         set({ sessionState: null, sessionStats: null, sessionLoading: false })
       } else {
         // Stats only. Refreshing sessionState here races the follow-up
@@ -2683,7 +2683,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
         ? isManagedWorktree
           ? `Close "${workspace?.name ?? workspaceId}"? Clean worktrees are removed; tabs with uncommitted changes are preserved on disk.`
           : `Close "${workspace?.name ?? workspaceId}"? This existing worktree and its files remain on disk.`
-        : `Remove "${workspace?.name ?? workspaceId}" from the sidebar? Its Pi process stops; files on disk are not touched.`,
+        : `Remove "${workspace?.name ?? workspaceId}" from the sidebar? Its TRCC process stops; files on disk are not touched.`,
       confirmLabel: isWorktree ? 'Close tab' : 'Remove',
       cancelLabel: 'Cancel',
       danger: true,
@@ -2728,8 +2728,8 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
   },
 
   changeWorkspaceFolder: async (workspaceId, newPath) => {
-    // Repointing the active workspace restarts its Pi below (the working
-    // directory is bound at spawn — without a restart Pi keeps operating in
+    // Repointing the active workspace restarts its TRCC below (the working
+    // directory is bound at spawn — without a restart TRCC keeps operating in
     // the old folder while the UI shows the new one) and strands the open
     // preview (the file service refuses paths outside the new root). Ask
     // about the in-flight turn and the editor buffer before touching anything.
@@ -2741,7 +2741,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
       await window.piDesktop.workspace.changePath(workspaceId, newPath)
       await get().loadWorkspaces()
       if (isActive) set({ previewTarget: null, editorDirty: false })
-      // Main stopped this workspace's Pi with the repoint; bring the active
+      // Main stopped this workspace's TRCC with the repoint; bring the active
       // one back up in the new folder.
       if (restartNeeded) await get().restartPi()
     } catch (err) {
@@ -2780,7 +2780,7 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
       const result = await window.piDesktop.packages.install(spec)
       if (result.success) {
         await get().loadInstalledPackages()
-        set({ packageNotification: { type: 'success', message: `Installed ${spec}. Restart Pi to load it.` } })
+        set({ packageNotification: { type: 'success', message: `Installed ${spec}. Restart TRCC to load it.` } })
       } else {
         set({ packageNotification: { type: 'error', message: result.output || 'Install failed' } })
       }
@@ -3227,8 +3227,8 @@ function handleMessageUpdate(
   }
 }
 
-// Pi reports a generic abort with exactly this text; anything else on an
-// aborted turn is a specific reason worth showing (mirrors Pi's own TUI).
+// TRCC reports a generic abort with exactly this text; anything else on an
+// aborted turn is a specific reason worth showing (mirrors TRCC's own TUI).
 const GENERIC_ABORT_MESSAGE = 'Request was aborted'
 const UNKNOWN_TURN_ERROR = 'Unknown error'
 
@@ -3268,7 +3268,7 @@ function handleTurnComplete(
         durationMs: tc.durationMs,
       }))
 
-      // Prefer the model/provider Pi records on this specific message (the
+      // Prefer the model/provider TRCC records on this specific message (the
       // authoritative source, robust to mid-turn model switches); fall back to
       // the currently-selected model when the event omits them.
       const activeModel = state.sessionState?.model
@@ -3435,11 +3435,11 @@ function handleToolEnd(
 /**
  * Tool names that spawn a subagent.
  *
- * Pi delegates through the `pi-subagents` package, which registers `subagent`
+ * TRCC delegates through the `pi-subagents` package, which registers `subagent`
  * and `subagent_wait`. OMP has delegation built in and groups it under
  * coordination as `task` (delegate one) and `hub` (fan out to several); `hub`
  * is what a plain "use the reviewer agent" request actually calls, observed on
- * the wire. The strip keyed off the Pi names only, so under OMP it stayed
+ * the wire. The strip keyed off the TRCC names only, so under OMP it stayed
  * empty while five reviewers really were running.
  */
 const SUBAGENT_TOOL_NAMES: ReadonlySet<string> = new Set(['subagent', 'subagent_wait', 'task', 'hub'])

@@ -1,7 +1,8 @@
 # TR Confidential Cowork Desktop
 
 Graphical Pi Desktop with bundled TRPi and confidential TrustedRouter inference.
-This macOS alpha uses `trustedrouter/confidential` exclusively, with encrypted
+This macOS alpha defaults to `trustedrouter/confidential` and supports named
+confidential models, with encrypted
 API-key storage, local conversation history, and explicit tool approvals.
 
 See [setup, privacy boundaries, and release gates](CONFIDENTIAL-COWORK.md).

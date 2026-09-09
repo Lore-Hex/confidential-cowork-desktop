@@ -404,6 +404,7 @@ app.whenReady().then(async () => {
     executable: runtimeLocation(resources), agentDir,
     permissionExtension: join(resources, 'pi-desktop-permissions.ts'),
     readKey: () => vault.read(),
+    readPreferredModel: async () => workspaceManager ? (await loadAppSettings(workspaceManager)).defaultModel ?? undefined : undefined,
   })
   if (!externalUserDataDir) {
     await migrateLegacyGuiData({

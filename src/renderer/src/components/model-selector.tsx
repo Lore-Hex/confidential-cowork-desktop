@@ -13,7 +13,7 @@ interface ModelSelectorProps {
 
 /**
  * Searchable model picker for the status bar.
- * Opens upward; loads models when Pi is running.
+ * Opens upward; loads models when TRCC is running.
  */
 export function ModelSelector({ className, compact = false }: ModelSelectorProps): React.JSX.Element {
   const sessionState = useAppStore((state) => state.sessionState)
@@ -105,7 +105,7 @@ export function ModelSelector({ className, compact = false }: ModelSelectorProps
     if (useAppStore.getState().piStatus === 'running') {
       await setModel(model.provider, model.id)
     } else {
-      // Persist preferred model for the next Pi start.
+      // Persist preferred model for the next TRCC start.
       const updated = await window.piDesktop.settings.save({
         defaultProvider: model.provider,
         defaultModel: model.id,
@@ -151,7 +151,7 @@ export function ModelSelector({ className, compact = false }: ModelSelectorProps
 
           {piStatus !== 'running' && (
             <div className="border-b border-border px-3 py-2 text-xs text-dim">
-              Start Pi to list and change models.
+              Start TRCC to list and change models.
             </div>
           )}
 

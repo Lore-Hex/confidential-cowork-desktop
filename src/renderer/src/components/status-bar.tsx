@@ -19,8 +19,8 @@ export function StatusBar(): React.JSX.Element {
   const piStatus = useAppStore((state) => state.piStatus)
   const piPid = useAppStore((state) => state.piPid)
   // Name the engine that is actually running; the two are not interchangeable
-  // and a user who switched to OMP should not be told Pi is running.
-  const engineLabel = useAppStore((state) => agentEngineLabel(state.piEngine) ?? 'Pi')
+  // and a user who switched to OMP should not be told TRCC is running.
+  const engineLabel = useAppStore((state) => agentEngineLabel(state.piEngine) ?? 'TRCC')
   const sessionStats = useAppStore((state) => state.sessionStats)
   const isStreaming = useAppStore((state) => state.isStreaming)
   const pendingSteering = useAppStore((state) => state.pendingSteering)
@@ -77,7 +77,7 @@ export function StatusBar(): React.JSX.Element {
     <div className="flex h-7 items-center justify-between border-t border-border bg-app px-3 text-xs">
       {/* Left section */}
       <div className="flex items-center gap-3">
-        {/* Pi Status */}
+        {/* TRCC Status */}
         <div className="flex items-center gap-1.5">
           <div
             className={clsx(
@@ -139,7 +139,7 @@ export function StatusBar(): React.JSX.Element {
           data-workflow-toggle="true"
           onClick={() => {
             // Session-surface button: opens the active session's runs (scoped by
-            // Pi's header UUID, the exact identifier persisted runs carry). The
+            // TRCC's header UUID, the exact identifier persisted runs carry). The
             // global list is only a fallback for the no-session state; closing
             // preserves the scope so a close/reopen stays in-session.
             const state = useAppStore.getState()

@@ -22,7 +22,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
-      - run: node --import tsx --test $(find src resources -name '*.test.ts')
+      - run: node --import tsx --test --test-concurrency=1 $(find src resources -name '*.test.ts')
       - run: node scripts/hydrate-runtime.mjs
       - run: npm run build
       - run: node scripts/cowork-desktop-smoke.mjs

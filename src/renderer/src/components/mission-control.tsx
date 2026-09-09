@@ -117,7 +117,7 @@ export function MissionControl(): React.JSX.Element {
         <section className="mb-6">
           <SectionHeading title="Live sessions" count={runtimes.length} />
           {runtimes.length === 0 ? (
-            <EmptyState>No live session runtimes yet. Start a task to put Pi to work in the background.</EmptyState>
+            <EmptyState>No live session runtimes yet. Start a task to put TRCC to work in the background.</EmptyState>
           ) : (
             <div className="grid gap-2 md:grid-cols-2">
               {runtimes.map((runtime) => {

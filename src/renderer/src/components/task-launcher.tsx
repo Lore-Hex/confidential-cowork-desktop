@@ -67,7 +67,7 @@ export function TaskLauncher(): React.JSX.Element | null {
               <Play size={16} className="text-accent-fg" />
               <h2 id="task-launcher-title" className="text-sm font-semibold text-primary">New task</h2>
             </div>
-            <p className="mt-1 text-xs text-dim">Start a fresh Pi session and send the task immediately.</p>
+            <p className="mt-1 text-xs text-dim">Start a fresh TRCC session and send the task immediately.</p>
           </div>
           <button
             type="button"

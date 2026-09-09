@@ -1018,7 +1018,7 @@ export class PiRpcManager extends EventEmitter {
    * Returns a correlated response if an id is provided.
    */
   async sendCommand(command: Record<string, unknown>): Promise<PiResponseEvent | null> {
-    command = confidentialCommand(command)
+    command = await confidentialCommand(command)
     if (!this.process?.stdin || this.status !== 'running') {
       throw new Error('Pi process is not running')
     }

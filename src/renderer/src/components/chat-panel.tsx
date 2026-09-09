@@ -69,7 +69,7 @@ export function ChatPanel(): React.JSX.Element {
   const streamingToolCalls = useAppStore((state) => state.streamingToolCalls)
   const piStatus = useAppStore((state) => state.piStatus)
   const piStartupPhase = useAppStore((state) => state.piStartupPhase)
-  const engineLabel = useAppStore((state) => agentEngineLabel(state.piEngine) ?? 'Pi')
+  const engineLabel = useAppStore((state) => agentEngineLabel(state.piEngine) ?? 'TRCC')
   const terminalOpen = useAppStore((state) => state.terminalOpen)
   const reviewOpen = useAppStore((state) => state.reviewOpen)
   const sidebarOpen = useAppStore((state) => state.sidebarOpen)
@@ -212,7 +212,7 @@ export function ChatPanel(): React.JSX.Element {
                 workflowToggle
                 onClick={() => {
                   // Session-surface button: while a session is active this opens
-                  // THAT session's runs (scoped by Pi's header UUID, the exact
+                  // THAT session's runs (scoped by TRCC's header UUID, the exact
                   // identifier persisted runs carry). The global list is only a
                   // fallback for the no-session state; closing preserves scope.
                   const state = useAppStore.getState()

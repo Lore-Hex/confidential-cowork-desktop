@@ -37,11 +37,20 @@ try {
     await page.getByRole('button', { name: 'Save key and continue' }).click()
     await page.getByRole('heading', { name: 'Your confidential workspace' }).waitFor({ state: 'hidden' })
     assert.equal((await page.evaluate(() => window.piDesktop.account.status())).configured, true)
-    const result = await page.evaluate(async (path) => {
+    const selectedModel = process.env.COWORK_SMOKE_MODEL || 'trustedrouter/confidential'
+    const result = await page.evaluate(async ({ path, model }) => {
       const api = window.piDesktop
       const workspace = await api.workspace.create('Smoke', path)
       await api.workspace.setActive(workspace.id)
       await api.pi.start()
+      const catalog = await api.model.listAvailable()
+      assertModelPresent(catalog, model)
+      function assertModelPresent(catalog, model) {
+        if (!catalog.data.models.some((entry) => entry.id === model && entry.provider === 'trustedrouter')) throw new Error('Selected confidential model absent')
+      }
+      await api.model.set('trustedrouter', model)
+      await api.settings.save({ defaultProvider: 'trustedrouter', defaultModel: model })
+      await api.pi.restart()
       const state = await api.session.getState()
       const response = await new Promise((resolve, reject) => {
         const timer = setTimeout(() => { unsubscribe(); reject(new Error('Live smoke timed out')) }, 90000)
@@ -51,9 +60,11 @@ try {
         api.commands.prompt('Reply with exactly PONG. Do not use tools.').catch(reject)
       })
       return { state, response }
-    }, data)
+    }, { path: data, model: selectedModel })
     assert.equal(result.state.data.model.provider, 'trustedrouter')
-    assert.equal(result.state.data.model.id, 'trustedrouter/confidential')
+    assert.equal(result.state.data.model.id, selectedModel)
+    assert.equal(result.state.data.model.samplingParams.provider.min_privacy, 'confidential')
+    assert.equal(result.state.data.model.samplingParams.provider.data_collection, 'deny')
     const messages = result.response.messages ?? []
     const assistant = messages.findLast((message) => message.role === 'assistant')
     assert.ok(assistant && assistant.stopReason !== 'error', JSON.stringify(assistant))

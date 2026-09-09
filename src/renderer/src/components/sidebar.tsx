@@ -105,7 +105,7 @@ export function Sidebar(): React.JSX.Element {
     })
   }
 
-  // Inline session rename. Only the active session can be renamed (Pi's rename
+  // Inline session rename. Only the active session can be renamed (TRCC's rename
   // targets it), and it's reachable from two spots — the Current Session panel
   // (`'current'`) and its highlighted row in Recent Sessions (`'recent'`).
   const [renamingWhere, setRenamingWhere] = useState<'current' | 'recent' | null>(null)
@@ -124,7 +124,7 @@ export function Sidebar(): React.JSX.Element {
     const cancelled = renameCancelRef.current
     renameCancelRef.current = false
     setRenamingWhere(null)
-    // Pi's set_session_name RPC rejects an empty name ("cannot be empty"), so an
+    // TRCC's set_session_name RPC rejects an empty name ("cannot be empty"), so an
     // empty commit is a no-op (keeps the current name) rather than a doomed call.
     const trimmed = renameValue.trim()
     if (!cancelled && trimmed) setSessionName(trimmed)
@@ -288,7 +288,7 @@ export function Sidebar(): React.JSX.Element {
         onArchive: (id) => archiveSession(id),
         onUnarchive: (id) => unarchiveSession(id),
         onDelete: (s) => { deleteSession(s) },
-        // Rename only offered for the active session (Pi renames the active one).
+        // Rename only offered for the active session (TRCC renames the active one).
         onRename: isActive ? () => startSessionRename('recent') : undefined,
         onRuns: (s) => openWorkflowRunsForSession(resolveRunSessionId(s.piSessionId, s.sessionId) ?? s.sessionId),
       })
@@ -314,7 +314,7 @@ export function Sidebar(): React.JSX.Element {
     options?: { nested?: boolean }
   ): React.JSX.Element => {
     const labels = getSessionRowLabels(session)
-    // Runs are keyed by Pi's header UUID, never the filename stem (the
+    // Runs are keyed by TRCC's header UUID, never the filename stem (the
     // tags/archive registry key). The stem suffix IS the UUID, so it is a
     // safe fallback when a row's header is unreadable.
     const workflowSessionId = resolveRunSessionId(session.piSessionId, session.sessionId) ?? session.sessionId
@@ -450,7 +450,7 @@ export function Sidebar(): React.JSX.Element {
       <div className="flex h-12 items-center justify-between border-b border-border px-3">
         <div className="flex items-center gap-2">
           <StatusPopover />
-          {/* Compact Home replaces the duplicate Pi-activity popover: workspace
+          {/* Compact Home replaces the duplicate TRCC-activity popover: workspace
               activity already lives in the switcher row, tab icons, and switcher
               dropdown, so the header keeps only system status + Home. */}
           <button
@@ -538,7 +538,7 @@ export function Sidebar(): React.JSX.Element {
               label="New task"
               active={false}
               onClick={() => setTaskLauncherOpen(true)}
-              title="Start a task in a new Pi session"
+              title="Start a task in a new TRCC session"
             />
           </div>
         </div>

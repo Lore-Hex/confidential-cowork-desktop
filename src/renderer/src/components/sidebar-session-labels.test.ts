@@ -52,7 +52,7 @@ assert.deepEqual(
 )
 
 // The tag names the CLI that owns the session, matching the status bar wording.
-assert.equal(getSessionEngineLabel({ engine: 'pi' }), 'Pi')
+assert.equal(getSessionEngineLabel({ engine: 'pi' }), 'TRCC')
 assert.equal(getSessionEngineLabel({ engine: 'omp' }), 'OMP')
 
 // A row from an older index carries no engine. It must stay untagged rather

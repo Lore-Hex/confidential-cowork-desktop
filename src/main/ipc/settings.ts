@@ -17,7 +17,7 @@ import { COWORK_MODEL, COWORK_PROVIDER } from '../../shared/confidential'
 
 function pinSettings(value: AppSettings): AppSettings {
   return { ...value, piEngine: 'pi', piExecutablePath: 'bundled', defaultArgs: [],
-    defaultProvider: COWORK_PROVIDER, defaultModel: COWORK_MODEL,
+    defaultProvider: COWORK_PROVIDER, defaultModel: value.defaultProvider === COWORK_PROVIDER && value.defaultModel ? value.defaultModel : COWORK_MODEL,
     council: { ...value.council, enabled: false } }
 }
 

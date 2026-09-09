@@ -2,7 +2,8 @@ import { ipcMain } from 'electron'
 import { IPC_CHANNELS } from '../../shared/ipc-contracts'
 import { isString } from './validation'
 import type { IpcContext } from './context'
-import { COWORK_MODEL, COWORK_PROVIDER } from '../../shared/confidential'
+import { COWORK_PROVIDER } from '../../shared/confidential'
+import { loadConfidentialModelIds } from '../confidential-models'
 
 export function registerModelHandlers(ctx: IpcContext): void {
   const { getActivePi } = ctx
@@ -21,8 +22,9 @@ export function registerModelHandlers(ctx: IpcContext): void {
 
   ipcMain.handle(IPC_CHANNELS.MODEL_LIST_AVAILABLE, async () => {
     const response = await getActivePi().sendCommand({ type: 'get_available_models' })
+    const allowed = await loadConfidentialModelIds()
     const data = response?.data as { models?: Array<{ id: string; provider: string }> } | undefined
-    if (data?.models) data.models = data.models.filter((model) => model.provider === COWORK_PROVIDER && model.id === COWORK_MODEL)
+    if (data?.models) data.models = data.models.filter((model) => model.provider === COWORK_PROVIDER && allowed.has(model.id))
     return response
   })
 

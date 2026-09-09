@@ -3,9 +3,9 @@ import assert from 'node:assert/strict'
 import { isSubagentTool, subagentAgentName, subagentTaskText } from './store'
 
 /**
- * Pi delegates via the `pi-subagents` package (`subagent`, `subagent_wait`);
+ * TRCC delegates via the `pi-subagents` package (`subagent`, `subagent_wait`);
  * OMP has delegation built in and calls it `task`. The progress strip matched
- * only the Pi names, so under OMP it stayed empty while subagents ran.
+ * only the TRCC names, so under OMP it stayed empty while subagents ran.
  */
 
 test('both engines spawn tools are recognized', () => {

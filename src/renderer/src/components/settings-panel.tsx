@@ -631,7 +631,7 @@ export function SettingsPanel(): React.JSX.Element {
         <SettingsSection title="Agent Configuration">
           <SettingsRow
             label="Agent Installation"
-            description="Auto-detect Pi and OMP, choose an installed engine, or use a custom executable/path."
+            description="Auto-detect TRCC and OMP, choose an installed engine, or use a custom executable/path."
             stack
           >
             <div className="flex flex-col gap-2">
@@ -641,10 +641,10 @@ export function SettingsPanel(): React.JSX.Element {
                   onChange={(e) => handleAgentSelection(e.target.value)}
                   className="min-w-0 flex-1 appearance-none rounded-md border border-border-strong bg-surface px-3 py-1.5 text-sm text-primary hover:border-border-strong-hover focus:border-focus focus:outline-none"
                 >
-                  <option value="__auto__">Auto-detect (Pi first, then OMP)</option>
+                  <option value="__auto__">Auto-detect (TRCC first, then OMP)</option>
                   {detectedAgentInstalls.map((installation) => (
                     <option key={`${installation.kind}:${installation.path}`} value={installation.path}>
-                      {installation.kind === 'omp' ? 'OMP' : 'Pi'} — {installation.path}
+                      {installation.kind === 'omp' ? 'OMP' : 'TRCC'} — {installation.path}
                     </option>
                   ))}
                   {agentSelection === 'omp' && <option value="omp">OMP (not found)</option>}
@@ -684,7 +684,7 @@ export function SettingsPanel(): React.JSX.Element {
                     className="rounded-md border border-border-strong bg-surface px-2 py-1.5 text-sm text-primary focus:border-focus focus:outline-none"
                   >
                     <option value="auto">Auto</option>
-                    <option value="pi">Pi</option>
+                    <option value="pi">TRCC</option>
                     <option value="omp">OMP</option>
                   </select>
                 </div>
@@ -694,7 +694,7 @@ export function SettingsPanel(): React.JSX.Element {
                   ? 'Scanning common install locations and PATH…'
                   : detectedAgentInstalls.length > 0
                     ? `${detectedAgentInstalls.length} installed engine${detectedAgentInstalls.length === 1 ? '' : 's'} detected`
-                    : 'No Pi or OMP installation detected yet'}
+                    : 'No TRCC or OMP installation detected yet'}
               </div>
             </div>
           </SettingsRow>
@@ -854,7 +854,7 @@ export function SettingsPanel(): React.JSX.Element {
 
         {/* Behavior */}
         <SettingsSection title="Behavior">
-          <SettingsRow label="Permission Mode" description="Default safety mode for Pi actions">
+          <SettingsRow label="Permission Mode" description="Default safety mode for TRCC actions">
             <PermissionSelector
               value={permissionMode}
               onChange={(mode) => {
@@ -914,7 +914,7 @@ export function SettingsPanel(): React.JSX.Element {
 
           <SettingsRow
             label="Desktop Notifications"
-            description="Notify when Pi finishes, fails, or waits for approval in a workspace you are not looking at"
+            description="Notify when TRCC finishes, fails, or waits for approval in a workspace you are not looking at"
           >
             <Toggle checked={desktopNotifications} onChange={(v) => { setDesktopNotifications(v); setSettingsDraft({ desktopNotifications: v }) }} />
           </SettingsRow>
@@ -952,7 +952,7 @@ export function SettingsPanel(): React.JSX.Element {
         <SettingsSection title="Multi-Agent Council Planning">
           <SettingsRow
             label="Enable council planning"
-            description="Spawns Claude/Codex alongside Pi to plan tasks. Increases token usage and credit/API costs."
+            description="Spawns Claude/Codex alongside TRCC to plan tasks. Increases token usage and credit/API costs."
           >
             <Toggle
               checked={settings?.council.enabled ?? false}
@@ -972,7 +972,7 @@ export function SettingsPanel(): React.JSX.Element {
                 <div className="flex flex-col gap-2">
                   {(['pi', 'claude', 'codex'] as const).map((id) => {
                     const detected = detectedAgents[id]
-                    const label = id === 'pi' ? 'Pi' : id === 'claude' ? 'Claude' : 'Codex'
+                    const label = id === 'pi' ? 'TRCC' : id === 'claude' ? 'Claude' : 'Codex'
                     return (
                       <label
                         key={id}

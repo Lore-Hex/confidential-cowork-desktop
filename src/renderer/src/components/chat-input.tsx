@@ -67,7 +67,7 @@ function detectMention(ta: HTMLTextAreaElement): MentionState | null {
   return { start: pos - query.length - 1, query }
 }
 
-// A staged attachment: either inlined as text or sent to Pi as an image block.
+// A staged attachment: either inlined as text or sent to TRCC as an image block.
 type Attachment =
   | { kind: 'text'; name: string; path: string; content: string }
   | { kind: 'image'; name: string; path: string; image: PromptImage }
@@ -195,7 +195,7 @@ export function ChatInput(): React.JSX.Element {
   }, [mentionResults])
 
   // Replace the `@<query>` token with a path reference (`@<relativePath> `) so
-  // Pi reads the file itself with its own tools — unlike the 📎 attach button,
+  // TRCC reads the file itself with its own tools — unlike the 📎 attach button,
   // which inlines the whole file content.
   const selectMention = useCallback(
     (result: FileSearchResult) => {
@@ -263,7 +263,7 @@ export function ChatInput(): React.JSX.Element {
       draft.current = ''
 
       // Text attachments are inlined into the prompt; image attachments are
-      // sent as Pi image blocks so the model actually sees them.
+      // sent as TRCC image blocks so the model actually sees them.
       const textAttachments = attachments.filter((a) => a.kind === 'text')
       const imageAttachments = attachments.filter(
         (a): a is Extract<Attachment, { kind: 'image' }> => a.kind === 'image'
@@ -370,7 +370,7 @@ export function ChatInput(): React.JSX.Element {
     }
   }, [])
 
-  // A stopped agent stays typable: the first send lazy-starts Pi/OMP.
+  // A stopped agent stays typable: the first send lazy-starts TRCC/OMP.
   // Only transient/error states block input.
   const isDisabled = piStatus === 'starting' || piStatus === 'error'
 
@@ -671,7 +671,7 @@ export function ChatInput(): React.JSX.Element {
               }}
               disabled={isDisabled || isStreaming}
               className="hover:bg-highlight-strong flex items-center justify-center rounded-md p-1.5 text-dim hover:text-secondary transition-colors disabled:opacity-50"
-              title={isDisabled ? 'Start Pi/OMP before planning with Council' : 'Plan with Council'}
+              title={isDisabled ? 'Start TRCC/OMP before planning with Council' : 'Plan with Council'}
               aria-label="Plan with Council"
             >
               <Users size={15} />

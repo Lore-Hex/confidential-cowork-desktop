@@ -10,10 +10,10 @@ test('all session starts pin the bundle, credentials, routing, and shipped permi
   const executable = join(root, 'agent')
   const permissionExtension = join(root, 'permissions.ts')
   await writeFile(executable, 'synthetic'); await writeFile(permissionExtension, 'synthetic')
-  configureConfidentialRuntime({ executable, permissionExtension, agentDir: root, readKey: async () => 'synthetic-secret' })
+  configureConfidentialRuntime({ executable, permissionExtension, agentDir: root, readKey: async () => 'synthetic-secret', loadModelIds: async () => new Set(['trustedrouter/confidential', 'z-ai/glm-5.3-flash']) })
   try {
     for (const session of [{}, { sessionPath: '/session' }, { forkSessionPath: '/session' }, { continueSession: true }]) {
-      const start = await confidentialStart({ ...session, engine: 'omp', provider: 'other', model: 'other',
+      const start = await confidentialStart({ ...session, engine: 'omp',
         args: ['--provider', 'other', '-e', '/untrusted.ts', '--tools', 'read,grep'],
         env: { TRUSTEDROUTER_API_KEY: 'wrong', TR_COWORK_CODING_AGENT_DIR: '/other', PI_DESKTOP_PERMISSION_MODE: 'ask-edits' } })
       assert.equal(start.provider, 'trustedrouter')
@@ -25,9 +25,16 @@ test('all session starts pin the bundle, credentials, routing, and shipped permi
       assert.deepEqual(start.args, ['--no-extensions', '--no-skills', '--no-prompt-templates', '-e', permissionExtension, '--tools', 'read,grep'])
       assert.equal(JSON.stringify(start.args).includes('synthetic-secret'), false)
     }
-    assert.throws(() => confidentialCommand({ type: 'set_model', provider: 'openai', modelId: 'other' }), /requires/)
-    assert.throws(() => confidentialCommand({ type: 'switch_session', sessionPath: '/other' }), /session list/)
-    assert.deepEqual(confidentialCommand({ type: 'cycle_model' }), { type: 'set_model', provider: 'trustedrouter', modelId: 'trustedrouter/confidential' })
+    await assert.rejects(confidentialCommand({ type: 'set_model', provider: 'openai', modelId: 'other' }), /requires/)
+    await assert.rejects(confidentialCommand({ type: 'switch_session', sessionPath: '/other' }), /session list/)
+    assert.deepEqual(await confidentialCommand({ type: 'cycle_model' }), { type: 'set_model', provider: 'trustedrouter', modelId: 'trustedrouter/confidential' })
+    for (const session of [{}, { sessionPath: '/session' }, { continueSession: true }]) {
+      const start = await confidentialStart({ ...session, provider: 'trustedrouter', model: 'z-ai/glm-5.3-flash' })
+      assert.equal(start.model, 'z-ai/glm-5.3-flash')
+    }
+    await assert.rejects(confidentialStart({ provider: 'trustedrouter', model: 'unknown' }), /requires/)
+    const selected = { type: 'set_model', provider: 'trustedrouter', modelId: 'z-ai/glm-5.3-flash' }
+    assert.deepEqual(await confidentialCommand(selected), selected)
     await rm(executable)
     await assert.rejects(confidentialStart({}), /bundled agent is missing/)
   } finally { await rm(root, { recursive: true, force: true }) }

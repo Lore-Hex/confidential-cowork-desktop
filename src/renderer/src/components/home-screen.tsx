@@ -105,7 +105,7 @@ export function HomeInfoSummary({ compact }: { compact?: boolean }): React.JSX.E
         }
         targetId = ws?.id
       }
-      // Workspace/session activation is non-destructive; the target Pi runtime
+      // Workspace/session activation is non-destructive; the target TRCC runtime
       // hydrates in the background while Chat opens immediately.
       if (targetId) {
         if (!(await activateWorkspace(targetId, { awaitingSession: true }))) return
@@ -374,7 +374,7 @@ function HomeScreenInfo(): React.JSX.Element {
             <Play size={18} className="shrink-0 text-accent-fg" />
             <div className="min-w-0">
               <div className="text-sm font-medium text-primary">New Task</div>
-              <div className="truncate text-xs text-dim">Start work in a fresh Pi session</div>
+              <div className="truncate text-xs text-dim">Start work in a fresh TRCC session</div>
             </div>
           </button>
         </div>

@@ -277,7 +277,7 @@ test('prepareChatMessages enriches tool results with paired name and file', () =
   assert.equal(res?.toolFile, 'src/app/foo.ts')
 })
 
-test('splitReadTruncationNote peels off Pi read footer and trailing blanks', () => {
+test('splitReadTruncationNote peels off TRCC read footer and trailing blanks', () => {
   const content = 'line1\nline2\n\n[262 more lines in file. Use offset=21 to continue.]'
   const { code, note } = splitReadTruncationNote(content)
   assert.equal(code, 'line1\nline2')

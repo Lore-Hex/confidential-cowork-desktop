@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import type { PiRpcEvent } from '../../shared/ipc-contracts'
 import { buildPlanningPrompt } from './utils/planning-prompt'
 
-// sendPrompt/sendSteer reach the Pi process through the preload bridge; these
+// sendPrompt/sendSteer reach the TRCC process through the preload bridge; these
 // stubs accept the calls so the echo bookkeeping under test can run.
 const piDesktopStub = {
   pi: {
@@ -54,7 +54,7 @@ function externalPromptEvents(): number {
     .timelineEvents.filter((e) => e.title === 'External prompt received').length
 }
 
-// A prompt injected inside the Pi process (e.g. pi-nvim's socket bridge) only
+// A prompt injected inside the TRCC process (e.g. pi-nvim's socket bridge) only
 // reaches the GUI through the message_start echo. It must render.
 test('external user message_start renders a bubble and timeline entry', () => {
   useAppStore.getState().handlePiEvent(userMessageStart('from nvim'))

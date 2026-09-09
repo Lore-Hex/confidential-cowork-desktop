@@ -486,7 +486,7 @@ function AgentTranscript({ agent, onBack }: { agent: WorkflowAgentDetail; onBack
   const enablePersistence = async (): Promise<void> => {
     try {
       await window.piDesktop.workflows.setPersistAgentSessions(true)
-      setPersistenceMessage('Enabled globally. Reload Pi before the next workflow run.')
+      setPersistenceMessage('Enabled globally. Reload TRCC before the next workflow run.')
     } catch (error) {
       setPersistenceMessage(error instanceof Error ? error.message : 'Could not update workflow settings.')
     }
@@ -505,7 +505,7 @@ function AgentTranscript({ agent, onBack }: { agent: WorkflowAgentDetail; onBack
         <div className="flex shrink-0 items-start gap-2 border-b border-warning/30 bg-warning-bg/20 px-3 py-2 text-[11px] text-warning">
           <AlertTriangle size={14} className="mt-0.5 shrink-0" />
           <div className="min-w-0 flex-1">
-            <div>Showing the workflow&apos;s captured history. Future runs can retain every raw Pi message and tool result.</div>
+            <div>Showing the workflow&apos;s captured history. Future runs can retain every raw TRCC message and tool result.</div>
             {persistenceMessage ? <div className="mt-1 text-success">{persistenceMessage}</div> : <button type="button" onClick={() => void enablePersistence()} className="mt-1 rounded border border-warning/50 px-2 py-1 text-[10px] text-warning hover:bg-warning-bg/30">Enable full transcripts for future runs</button>}
           </div>
         </div>
@@ -580,7 +580,7 @@ function RunDetail({ run, onBack, onRefresh, onSelectAgent }: {
     if (feedbackTimer.current !== null) window.clearTimeout(feedbackTimer.current)
   }, [])
 
-  // Dispatch a REAL control to the run's owning workspace Pi process (the
+  // Dispatch a REAL control to the run's owning workspace TRCC process (the
   // extension's `/workflows stop|resume`). The persisted status flips on disk;
   // the navigator's poll picks it up. Nothing is faked locally.
   const runControl = async (action: WorkflowControlAction): Promise<void> => {

@@ -6,11 +6,11 @@ import type { AgentEngineKind } from './ipc-contracts'
  * Shared by both processes because several surfaces name the running agent —
  * the status bar, the empty chat state, the session row tags, and the
  * permission prompt the agent itself raises — and they must agree. Wherever
- * the UI says "Pi" about the agent rather than about the app, it has to say
+ * the UI says "TRCC" about the agent rather than about the app, it has to say
  * "OMP" when OMP is the engine.
  */
 const AGENT_ENGINE_LABELS: Record<AgentEngineKind, string> = {
-  pi: 'Pi',
+  pi: 'TRCC',
   omp: 'OMP',
 }
 

@@ -71,7 +71,7 @@ export function ReviewRail(): React.JSX.Element | null {
           <h2 className="text-sm font-semibold text-primary">Review</h2>
         </div>
         <p className="mt-1 text-xs leading-5 text-dim">
-          Control what Pi can do before changes move forward.
+          Control what TRCC can do before changes move forward.
         </p>
       </div>
 
