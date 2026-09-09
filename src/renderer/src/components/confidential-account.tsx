@@ -51,7 +51,7 @@ export function ConfidentialAccount(): React.JSX.Element {
           {configured && <button type="button" disabled={busy} className="rounded px-3 py-2 text-error hover:bg-surface-hover" onClick={() => void remove()}>Remove key</button>}
         </div>
         <div className="mt-5 flex gap-4 text-sm">
-          <button type="button" className="text-accent" onClick={() => void window.piDesktop.system.openExternal('https://trustedrouter.com/console/keys')}>Get an API key</button>
+          <button type="button" className="text-accent" onClick={() => void window.piDesktop.system.openExternal('https://trustedrouter.com/console/api-keys')}>Get an API key</button>
           <button type="button" className="text-accent" onClick={() => void window.piDesktop.system.openExternal('https://trustedrouter.com/trust')}>Verify attestation</button>
         </div>
       </form>

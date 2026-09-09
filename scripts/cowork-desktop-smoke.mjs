@@ -10,9 +10,16 @@ import assert from 'node:assert/strict'
 const data = await mkdtemp(join(tmpdir(), 'cowork-gui-smoke-'))
 let app
 try {
-  app = await electron.launch({ args: ['.'], env: { ...process.env, PI_DESKTOP_USER_DATA_DIR: data }, timeout: 30000 })
+  app = await electron.launch({ args: ['.', `--user-data-dir=${data}`], env: { ...process.env, PI_DESKTOP_USER_DATA_DIR: data }, timeout: 30000 })
   const page = await app.firstWindow()
   await page.getByRole('heading', { name: 'Your confidential workspace' }).waitFor()
+  await app.evaluate(({ shell }) => {
+    globalThis.coworkSmokeOpenedUrls = []
+    shell.openExternal = async (url) => { globalThis.coworkSmokeOpenedUrls.push(url) }
+  })
+  await page.getByRole('button', { name: 'Get an API key', exact: true }).click()
+  await page.waitForTimeout(100)
+  assert.deepEqual(await app.evaluate(() => globalThis.coworkSmokeOpenedUrls), ['https://trustedrouter.com/console/api-keys'])
   assert.equal(await page.locator('#trustedrouter-key').getAttribute('type'), 'password')
   assert.equal(await page.getByRole('button', { name: 'Save key and continue' }).isDisabled(), true)
   const status = await page.evaluate(() => window.piDesktop.account.status())
