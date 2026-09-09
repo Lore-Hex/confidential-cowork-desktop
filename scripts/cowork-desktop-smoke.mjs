@@ -10,7 +10,9 @@ import assert from 'node:assert/strict'
 const data = await mkdtemp(join(tmpdir(), 'cowork-gui-smoke-'))
 let app
 try {
-  app = await electron.launch({ args: [process.env.COWORK_SMOKE_APP_PATH || '.', `--user-data-dir=${data}`], env: { ...process.env, PI_DESKTOP_USER_DATA_DIR: data }, timeout: 30000 })
+  const executablePath = process.env.COWORK_SMOKE_EXECUTABLE
+  const args = executablePath ? [] : [process.env.COWORK_SMOKE_APP_PATH || '.']
+  app = await electron.launch({ executablePath, args: [...args, `--user-data-dir=${data}`], env: { ...process.env, PI_DESKTOP_USER_DATA_DIR: data }, timeout: 30000 })
   const page = await app.firstWindow()
   await page.getByRole('heading', { name: 'Your confidential workspace' }).waitFor()
   await app.evaluate(({ shell }) => {
