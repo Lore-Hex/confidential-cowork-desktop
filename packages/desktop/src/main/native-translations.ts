@@ -20,5 +20,7 @@ export function setNativeTranslations(next: DesktopNativeBundle) {
 }
 
 export function nativeT(key: DesktopNativeKey, params?: Record<string, string | number>) {
-  return formatDesktopNativeMessage(bundle.messages[key], params).replaceAll("OpenCode", "Trusted Cowork")
+  const message = formatDesktopNativeMessage(bundle.messages[key], params)
+  if (key.startsWith("desktop.wsl.")) return message
+  return message.replaceAll("OpenCode", "Trusted Cowork")
 }

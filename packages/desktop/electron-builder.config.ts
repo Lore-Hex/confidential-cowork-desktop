@@ -9,11 +9,6 @@ const execFileAsync = promisify(execFile)
 const packageDir = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(packageDir, "../..")
 const signScript = path.join(rootDir, "script", "sign-windows.ps1")
-// The Electron 42 packaging update briefly installed Linux launchers/icons under
-// "opencode-desktop". Keep that hidden desktop entry around so existing GNOME/KDE
-// pins still resolve after the canonical app id changes back to ai.opencode.desktop.
-const legacyDesktopEntry = path.join(packageDir, "resources", "linux", "opencode-desktop.desktop")
-const legacyDesktopEntryFpm = `${legacyDesktopEntry}=/usr/share/applications/opencode-desktop.desktop`
 
 const metainfoFpm = (appId: string) =>
   `${path.join(packageDir, "resources", `${appId}.metainfo.xml`)}=/usr/share/metainfo/${appId}.metainfo.xml`
@@ -113,7 +108,7 @@ function getConfig() {
         appId,
         productName: "Trusted Cowork Dev",
         deb: { fpm: [metainfoFpm(appId)] },
-        rpm: { packageName: "opencode-dev", fpm: [metainfoFpm(appId)] },
+        rpm: { packageName: "trusted-cowork-dev", fpm: [metainfoFpm(appId)] },
       }
     }
     case "beta": {
@@ -124,7 +119,7 @@ function getConfig() {
         protocols: { name: "Trusted Cowork", schemes: ["trcc"] },
         publish: { provider: "github", owner: "Lore-Hex", repo: "confidential-cowork-desktop", channel: "latest" },
         deb: { fpm: [metainfoFpm(appId)] },
-        rpm: { packageName: "opencode-beta", fpm: [metainfoFpm(appId)] },
+        rpm: { packageName: "trusted-cowork-beta", fpm: [metainfoFpm(appId)] },
       }
     }
     case "prod": {
@@ -134,8 +129,8 @@ function getConfig() {
         productName: "Trusted Cowork",
         protocols: { name: "Trusted Cowork", schemes: ["trcc"] },
         publish: { provider: "github", owner: "Lore-Hex", repo: "confidential-cowork-desktop", channel: "latest" },
-        deb: { fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },
-        rpm: { packageName: "opencode", fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },
+        deb: { fpm: [metainfoFpm(appId)] },
+        rpm: { packageName: "trusted-cowork", fpm: [metainfoFpm(appId)] },
       }
     }
   }
