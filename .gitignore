@@ -1,141 +1,34 @@
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
-.npm/
-jspm_packages/
-docs/superpowers/
-
-# Build outputs
-out/
-release/
-dist/
-build/
-.cache/
-
-# IDE / editors
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.history/
-
-# OS
 .DS_Store
-Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# Environment
+node_modules
+.worktrees
+.sst
 .env
 .env.local
-.env.*.local
-.env.development
-.env.production
-
-# Signing & secrets — code-signing material and credentials, never commit.
-# Release binaries are currently unsigned (see AGENTS.md Distribution), but
-# a leaked signing key or cert bundle is still a security incident.
-*.pem
-*.key
-*.p12
-*.pfx
-*.mobileprovision
-*.provisionprofile
-secrets/
-.npmrc.local
-
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Testing / coverage
-coverage/
-*.lcov
-.nyc_output/
-
-# TypeScript
-*.tsbuildinfo
-
-# Electron / packaging artifacts
-resources/runtime/
-*.dmg
-*.AppImage
-# AppImage extraction dir (created by `AppImage --appimage-extract`)
-squashfs-root/
-*.exe
-*.msi
-*.pkg
-*.zip
-*.deb
-*.rpm
-*.snap
-*.blockmap
-# electron-builder auto-update metadata
-latest*.yml
-builder-debug.yml
-builder-effective-config.yaml
-
-# Local app state (developer-only)
-.pi-desktop-gui/
-
-# Pi project-level settings — created if Pi is ever run with this repo
-# itself as a workspace (see AGENTS.md Data Storage: .pi/settings.json)
-.pi/
-.pi-desktop/
-.pi-subagents/
-
-# Agent context — local-only memory and architecture notes
-MEMORY.md
-TEST.md
-
-# Local agent / tool config (per-developer, never committed)
-
-# AI Coding Agents
+.idea
+.vscode
+.codex
+*~
+playground
+tmp
+dist
+ts-dist
+.turbo
+**/.serena
 .serena/
-.claude/
-.claude-code/
-.codex/
-.kilo/
-.roo/
-.cline/
-.aider/
-.continue/
-.openhands/
-.agents/
-.superpowers/
+**/.omo
+.omo/
+/result
+refs
+Session.vim
+/opencode.json
+a.out
+target
+.scripts
+.direnv/
 
-# AI IDEs
-.cursor/
-.windsurf/
-.zed/
-
-# MCP
-.mcp/
-.mcp-server/
-.mcpservers/
-.context7/
-.playwright-mcp/
-
-# Agent Memory / Knowledge
-.openmemory/
-.mem0/
-.memory/
-.knowledge/
-.context/
-
-# Local Developer Config
-.fleet/
-
-# Local Runtime Environments
-.venv/
-.env/
-
-# Worktrees / Local Sandboxes
-.worktrees/
-.sandbox/
+# Local dev files
+opencode-dev
+UPCOMING_CHANGELOG.md
+logs/
+*.bun-build
+tsconfig.tsbuildinfo
