@@ -1,5 +1,40 @@
 # OpenCode Upstream Tracking
 
+## September 21, 2026
+
+Public main remains `4c46c96f`; draft PR #2 remains unmerged. The isolated
+daily worktree is based on its candidate `9ff9245a`. Reviewed all 11 new
+upstream commits through `e059ac59` on `anomalyco/opencode`'s `dev` branch.
+None is applicable to the locked confidential backend: the runtime changes
+are Together usage reporting and Bedrock tool images; the others concern hosted
+console authentication, hosted catalogs, stats, documentation, and generated
+Nix metadata. No hosted-provider policy or runtime source change was imported.
+
+Desktop and runtime typechecks, all 77 desktop tests, 3 packaging tests,
+SQLite draft persistence, 3 TUI lifecycle tests, and production build passed.
+Actual subprocess output passed under Node and Electron utilityProcess.
+OAuth/PKCE, credential persistence/sign-out, confidential eligibility and tool
+approval coverage used local fixtures, not a fresh interactive browser login.
+
+Today's single live confidential SDK request returned exact `PONG`, HTTP 200,
+model `openai/gpt-oss-120b`, ID `chatcmpl-faa4c7dc8edabafb8f31acc9d9206441`.
+The current-catalog upper estimate was $0.011059776, not measured settled spend.
+It used isolated profile storage, an existing encrypted credential, no retries,
+and no user conversation. No user session was revoked or replaced.
+
+The full runtime suite finished with 3,584 passed, 22 skipped, 1 todo, and
+1 failed across 254 files. It again reproduced the Bun PTY exit-status failure.
+One isolated comparison of both previously failing files passed all 7 tests.
+Do not infer a root cause or waive the full-suite gate from the isolated pass.
+The green GitHub CI run does not include the full runtime suite.
+
+The installed release passes deep strict codesign verification and Gatekeeper
+outside the sandbox. An initial sandboxed codesign failure did not reproduce
+with normal verification access. The documented `/confidential-cowork` page
+links to both correct `v0.3.0-alpha.1` DMGs, and both downloads, homepage, status,
+and API health return HTTP 200. No new package was signed or published; fresh
+interactive OAuth and Intel execution were not tested. Production is unchanged.
+
 ## September 20, 2026
 
 Production remains `v0.3.0-alpha.1`. This candidate is not approved for release.
