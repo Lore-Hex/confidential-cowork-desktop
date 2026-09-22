@@ -1,5 +1,43 @@
 # OpenCode Upstream Tracking
 
+## September 22, 2026
+
+Public main is still `4c46c96f`. Reviewed the five upstream commits through
+`fe3f3a41` (v1.18.32) on `anomalyco/opencode`'s `dev` branch. Ported separately:
+
+* `ba341c6c`: resolve package entrypoints to importable files under Node, with
+  a real Node regression test.
+* `f5ce4f88`: break the filesystem-search runtime import cycle.
+
+Skipped generated artifacts, upstream version churn, and hosted MiMo docs.
+No confidentiality, credentials, telemetry, approval, or fallback policy changed.
+
+Desktop, runtime, and core typechecks passed. All 77 desktop tests, 3 packaging
+tests, 3 TUI lifecycle tests, SQLite persistence, and the production build passed.
+Real subprocess results passed under Node and Electron utilityProcess.
+The expanded npm/filesystem run had 36 passes and 5 watcher-readiness timeouts;
+the new Node entrypoint test and filesystem-search tests passed. All five watcher
+failures reproduce on the pre-port candidate. A disposable native Parcel watcher
+probe also failed to observe file creation under both Bun and Node, independently
+of OpenCode services. This narrows the investigation but does not prove a root
+cause or justify skipping the gate.
+
+Full runtime result: 3,584 passed, 22 skipped, 1 todo, 1 failed across 254 files.
+The remaining failure is the previously recorded Bun PTY exit-status test.
+The draft remains blocked on that failure and the native watcher investigation.
+
+Today's one live confidential request returned exact `PONG`, HTTP 200, model
+`openai/gpt-oss-120b`, ID `chatcmpl-e167827e7c754ecc369443c2a782c63f`.
+Catalog-based upper estimate: $0.011059776, not measured settlement cost.
+Used isolated profile storage and the existing encrypted credential without
+modification, retries, or automatic funding. Browser OAuth, sign-out, credential
+persistence and tool permissions were covered by fixture tests, not a fresh
+interactive login. No Intel interactive execution was performed.
+
+Installed release signature and Gatekeeper passed. The public download page
+still links both correct `v0.3.0-alpha.1` DMGs; those assets, homepage, status and
+API health returned HTTP 200. No signing, publication, or website change was made.
+
 ## September 21, 2026
 
 Public main remains `4c46c96f`; draft PR #2 remains unmerged. The isolated
