@@ -1,5 +1,38 @@
 # OpenCode Upstream Tracking
 
+## September 23, 2026
+
+Public main remains `4c46c96f`; candidate is `cf610a95`. Reviewed all nine
+upstream commits through `7cb044ee` on `anomalyco/opencode`'s `dev` branch.
+They cover hosted console/Go/Zen changes, Codex model eligibility, a GitLab
+provider bump, and generated artifacts. None applies to the locked confidential
+backend; none addresses the native test blockers. No runtime source was imported.
+
+Desktop/runtime/core typechecks, 77 desktop tests, 3 packaging tests, 3 TUI
+lifecycle tests, SQLite persistence, production build, and actual subprocess
+results under Node and Electron utilityProcess passed. OAuth/PKCE, sign-out,
+encrypted credentials, fail-closed catalog and tool approvals used local fixtures.
+No fresh interactive OAuth or Intel execution was performed.
+
+Expanded core tests: 36 passed and the same 5 native watcher readiness failures.
+A disposable direct Parcel watcher probe also failed in a workspace directory,
+so the failure is not limited to macOS temporary-directory placement. This is
+not a proven root cause or a waiver of the native release gates.
+
+Full runtime: 3,584 passed, 22 skipped, 1 todo, 1 failed across 254 files.
+The same Bun PTY exit-status failure remains; no new runtime failures were seen.
+
+One live confidential request returned exact `PONG`, HTTP 200, model
+`openai/gpt-oss-120b`, ID `chatcmpl-6dd42a0bb894791c4a57f7515b3ac0fd`.
+Current-catalog upper estimate was $0.011059776, not actual settled spend.
+The harness used isolated profile storage and an existing encrypted credential;
+no retries, automatic funding, credential mutations, or user conversations.
+
+Installed signature/Gatekeeper checks passed. Homepage, status, API health,
+documented download page and both correct architecture DMGs returned HTTP 200.
+Production remains `v0.3.0-alpha.1` from `e8e6207`; no new signing, publication,
+installation or website deployment occurred. OnPrem remains unrelated and paused.
+
 ## September 22, 2026
 
 Public main is still `4c46c96f`. Reviewed the five upstream commits through
