@@ -1,5 +1,36 @@
 # OpenCode Upstream Tracking
 
+## September 24, 2026
+
+Public main remains `4c46c96f`. Reviewed seven upstream commits through
+`0f549842` on `anomalyco/opencode`'s `dev` branch. Ported `82d4c890` separately:
+redact credentials from debug configuration output, without mutating provider
+configuration. Its two tests passed, including real CLI output with fixture
+secrets. Skipped hosted Go/stats changes, generated metadata, the GitLab provider
+bump and Gemini-specific thinking defaults. Confidential routing is unchanged.
+
+Desktop/runtime typechecks, 77 desktop tests, 3 packaging tests, 3 TUI lifecycle
+tests, SQLite persistence and production build passed. Actual subprocess output
+passed under both Node and Electron utilityProcess. Expanded core tests recorded
+36 passes and the same 5 watcher-readiness failures. No gate was weakened.
+
+Full runtime completed with 3,587 passed, 22 skipped, 1 todo and zero failures
+across 255 files. The previously intermittent PTY test passed today; no fix was
+made or root cause established for it. The separate watcher gate still blocks
+release.
+
+One live confidential SDK request returned exact `PONG`, HTTP 200, model
+`openai/gpt-oss-120b`, ID `chatcmpl-c9e129c7561da91522ff6a6cb735e4ed`.
+Catalog upper estimate: $0.011059776, not measured settlement cost. Used isolated
+profile storage and the existing encrypted credential, with no retries, funding,
+session revocation or user conversations. OAuth/PKCE, sign-out, credential storage,
+catalog and tool-permission coverage used local fixtures. Fresh interactive login
+and Intel execution were not tested.
+
+Installed signature and Gatekeeper passed. Public homepage/status/API health,
+the documented download page and both correct DMGs returned HTTP 200. Production
+remains `v0.3.0-alpha.1`; no signing, publication or website deployment occurred.
+
 ## September 23, 2026
 
 Public main remains `4c46c96f`; candidate is `cf610a95`. Reviewed all nine
