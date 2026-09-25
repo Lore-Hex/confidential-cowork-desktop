@@ -1,5 +1,39 @@
 # OpenCode Upstream Tracking
 
+## September 25, 2026
+
+Public main remains `4c46c96f`; tested candidate is `38648a02`. Reviewed the
+three upstream commits through `34aa4274` on `anomalyco/opencode`'s `dev` branch.
+Hosted statistics, Zen documentation and issue automation do not affect the
+locked desktop backend. No new runtime source was imported.
+
+All source checks passed today: full runtime 3,587 passed, 22 skipped, 1 todo,
+zero failures across 255 files; expanded core 41 passed, zero failures; desktop
+77 passed; packaging 3 passed; TUI lifecycle 3 passed. Desktop/runtime typechecks,
+SQLite persistence, production build, and actual subprocess output under Node
+and Electron utilityProcess passed. Both previously failing native suites passed
+without a code change; their historical root causes are not established.
+
+One live confidential request returned exact `PONG`, HTTP 200, model
+`openai/gpt-oss-120b`, ID `chatcmpl-5a5fe0030547e967f1190593487445e1`.
+Catalog upper estimate: $0.011059776, not measured settlement cost. It used an
+isolated profile and the existing encrypted credential without retries, funding,
+session mutation, or user conversation content. OAuth/PKCE, sign-out, credentials,
+catalog and approval tests used fixtures, not a fresh signed-package login.
+
+Installed signature/Gatekeeper and public homepage/status/API health, download
+page and both correct architecture downloads passed. Production stays on
+`v0.3.0-alpha.1`; no release, install or website change was made.
+
+Release handoff: published provenance points to QuillCode workflow commit
+`312b4fbff98769ae9563c12540f46df271d432d3`, whose OpenCode signer verifies the
+`confidential-desktop` source branch. That branch still points to released source
+`e8e6207`. QuillCode's default-branch workflow is the legacy Pi/runtime signer and
+must not be dispatched for this candidate. Reconcile the reviewed signing path
+with the candidate before signing; then verify checksums/provenance and perform
+fresh signed-package OAuth, restart/sign-out, inference and tool approval before
+publishing. No interactive Intel verification is claimed.
+
 ## September 24, 2026
 
 Public main remains `4c46c96f`. Reviewed seven upstream commits through
