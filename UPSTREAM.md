@@ -1,5 +1,56 @@
 # OpenCode Upstream Tracking
 
+## September 27, 2026
+
+Public main remains `4c46c96f`. Reviewed all seven upstream commits after
+`34aa4274` through `b471c2b4495747353af768fbf2e0790c9d820ce2` on upstream `dev`.
+Ported separately with upstream attribution:
+
+* `29f07e0c` -> `470ff855`: shared HTTP(S)-only browser opener, updated opener
+  dependency, and rejection of non-web MCP authorization URLs.
+* `b471c2b4` -> `30db47ec`: detect browser launchers that already exited with
+  failure before the listener was attached, with regression tests.
+
+Not ported: `543c686c` hosted DeepSeek allowance, `adee738d` generated hosted
+documentation, `696f41bc` Nix hashes (this desktop uses the reviewed macOS/Bun
+pipeline), `b65de4d6` hosted model docs, and `a42f393c` ecosystem marketing link.
+No confidential routing, credential, approval, telemetry or backend policy was
+weakened. September 26's isolated worktree had no commits or completed test record;
+this run includes that unported upstream range rather than assuming it was done.
+
+Desktop, runtime and core typechecks passed. Desktop tests: 77 passed; packaging:
+3 passed; core browser/filesystem/npm tests: 43 passed; TUI lifecycle: 3 passed.
+SQLite persistence, production build, and actual subprocess output under Node and
+Electron utilityProcess passed. Initial sandboxed desktop and build attempts were
+blocked by loopback/network restrictions; normal-permission runs passed unchanged.
+
+Full runtime: 3,590 passed, 22 skipped, 1 todo, 1 failed across 256 files. The
+failure was `v2 pty HttpApi > applies plugin shell environment before forced PTY
+values`, a five-second output wait timeout. One focused diagnostic run of this
+file and the new MCP browser/OAuth tests passed all 19 tests. This does not waive
+the failed full-suite gate or establish its root cause; candidate release remains
+blocked. Do not increase timeouts or retry until green as a substitute for repair.
+
+One live confidential SDK request returned exact `PONG`, HTTP 200, model
+`openai/gpt-oss-120b`, ID `chatcmpl-70bfd5ff936335a23562fc2888955d23`.
+The catalog-based request upper estimate was $0.011059776, not measured settled
+spend. Used an isolated profile and the existing encrypted credential, with no
+retries, automatic funding, session mutation or user conversation content.
+OAuth/PKCE, sign-out, bridge streaming and tool approvals were fixture-tested;
+fresh signed-package interactive login and Intel execution were not verified.
+
+Installed release signature and Gatekeeper passed. Homepage, status, API health,
+download page and both DMG links returned HTTP 200. Production stays on
+`v0.3.0-alpha.1`; no signing, installation, publication or website change occurred.
+
+Signing discovery correction: QuillCode's current
+`.github/workflows/sign-trusted-cowork.yml` (workflow 358334173) is the correct
+OpenCode, dual-architecture signer. The similarly named `sign-trcc-desktop.yml`
+and `codex/tr-cowork-signer-build-order` branch are not the appropriate path.
+The correct workflow verifies the immutable SHA against `confidential-desktop`.
+After resolving the full-suite gate, promote reviewed source through that branch,
+use a new release version, and complete signed-package acceptance before release.
+
 ## September 25, 2026
 
 Public main remains `4c46c96f`; tested candidate is `38648a02`. Reviewed the
