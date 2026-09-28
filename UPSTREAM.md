@@ -1,5 +1,40 @@
 # OpenCode Upstream Tracking
 
+## September 28, 2026
+
+Public main remains `4c46c96f`; tested candidate is `22e58c3c`. Reviewed all six
+upstream commits after `b471c2b4` through
+`03e67171ab2dc1e7f16e8cebfbc7f778f61b89f0` on upstream `dev`. No source port:
+`35fc7a77` fixes the Cloudflare-specific loader and extracts the existing shared
+timeout wrapper without adding behavior needed by the locked TrustedRouter path;
+`1eacc1bd` changes upstream changelog model selection; `90e65205` bumps upstream
+release versions; `661b7c55`, `d6963bdf`, and `03e67171` change hosted rankings.
+No alternate provider or hosted service was enabled.
+
+All daily source gates passed: full runtime 3,591 passed, 22 skipped, 1 todo,
+zero failures across 256 files; core browser/filesystem/npm 43 passed; desktop
+77 passed; packaging 3 passed; TUI lifecycle 3 passed. Desktop, runtime and core
+typechecks, SQLite persistence, production build, and actual subprocess output
+under Node and Electron utilityProcess passed. The production build ran after
+the full runtime suite. Yesterday's terminal timeout did not recur, without any
+source or timeout change; this does not prove its historical root cause or repair.
+Yesterday's PR CI and GitGuardian checks are also green.
+
+One live confidential SDK request returned exact `PONG`, HTTP 200, model
+`openai/gpt-oss-120b`, ID `chatcmpl-f0167212d9be669cbf4ccced95a88d1e`.
+Catalog-based request upper estimate: $0.011059776, not measured settled spend.
+Used an isolated profile and existing encrypted credential without retries,
+funding, user-session mutation or user conversation content. OAuth/PKCE,
+credential persistence/removal, bridge streaming and approval coverage are local
+fixture tests, not a new signed-package interactive login or Intel execution.
+
+Installed release signature/Gatekeeper, public homepage/status/API health,
+download page and both DMG downloads passed. No new package was signed or
+published and no website change was made; production remains `v0.3.0-alpha.1`.
+The existing draft candidate is not automatically promoted by one clean run.
+Fresh signed-package OAuth, restart/sign-out, inference and approval acceptance
+remain required before that candidate can replace the working release.
+
 ## September 27, 2026
 
 Public main remains `4c46c96f`. Reviewed all seven upstream commits after
