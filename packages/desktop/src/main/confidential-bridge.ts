@@ -36,9 +36,10 @@ export async function startConfidentialBridge(options: {
   const active = new Set<AbortController>()
   const transport: typeof fetch = (input, init) => (options.fetch ?? fetch)(input, { ...init, redirect: "error" })
   const catalog = new TrustedRouter({
-    baseUrl: "https://api.trustedrouter.com/v1",
+    baseUrl: "https://api.confidential.trustedrouter.com/v1",
     fetchImpl: transport,
     maxRetries: 0,
+    regionalFailover: false,
   })
   let cached: { models: Set<string>; expires: number } | undefined
   let pending: Promise<Set<string>> | undefined
@@ -111,7 +112,7 @@ export async function startConfidentialBridge(options: {
       )
       const client = new TrustedRouter({
         apiKey: await options.readKey(),
-        baseUrl: "https://api.trustedrouter.com/v1",
+        baseUrl: "https://api.confidential.trustedrouter.com/v1",
         fetchImpl: transport,
         maxRetries: 0,
         regionalFailover: false,

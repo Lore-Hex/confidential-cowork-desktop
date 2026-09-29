@@ -1,5 +1,26 @@
 # OpenCode Upstream Tracking
 
+## Confidential API Endpoint Update
+
+On September 29, at the user's request, the desktop catalog and both inference
+paths were moved to `https://api.confidential.trustedrouter.com/v1`. Both SDK
+clients explicitly disable regional failover. OAuth remains on the separate
+`https://trustedrouter.com/v1` control plane. Documentation, live diagnostic and
+daily automation now use the confidential API host. Historical entries below
+describe the endpoint used at the time and are not current configuration.
+
+Desktop regression coverage asserts catalog/chat/Responses use the new host,
+blocks direct renderer access to it, and verifies connection failure does not
+fall back to another host. All 78 desktop tests passed. One bounded isolated live
+request returned exact PONG through the new host, HTTP 200, request
+`chatcmpl-10262669d5cd6be10479fc2e2c404322`, model `openai/gpt-oss-120b`.
+Its catalog upper estimate was $0.011059776, not measured settlement cost.
+
+Upstream was fetched again and remains at `7945de20`; applicable desktop/runtime
+ports are current through that revision, not a wholesale merge of upstream's
+hosted business. This source update does not replace the signed production app.
+The full-suite native PTY failure described below still blocks release.
+
 ## September 29, 2026
 
 Public main remains `4c46c96f`; tested candidate is `18ec513b`. Reviewed the
