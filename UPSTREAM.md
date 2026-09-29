@@ -1,5 +1,44 @@
 # OpenCode Upstream Tracking
 
+## September 29, 2026
+
+Public main remains `4c46c96f`; tested candidate is `18ec513b`. Reviewed the
+20-commit range after `03e67171` through
+`7945de208964a49300d7f770d1a71d078db9a4c4` on upstream `dev`, including merge
+commits. Changes are hosted Go/Go Plus plans, billing/referrals, statistics,
+documentation/privacy links, translations and generated documentation. None
+changes the locked confidential desktop path; no source was ported or policy
+silently imported.
+
+Desktop/runtime typechecks passed. Desktop tests: 77 passed; packaging: 3 passed;
+core browser/filesystem/npm: 43 passed; TUI lifecycle: 3 passed. SQLite persistence,
+production build, and actual subprocess output under Node and Electron passed.
+Full runtime: 3,590 passed, 22 skipped, 1 todo, 1 failed across 256 files.
+`v2 pty HttpApi > serves location-wrapped PTY routes and retains exited sessions`
+still reported a fast `exit 4` process as running after its 20-second deadline.
+No retry was used to turn that failed gate green. The build ran afterward.
+
+Investigation narrowed a plausible race: bun-pty 0.4.8 starts its read loop inside
+the Terminal constructor, and can fire data/exit events before the consumer can
+subscribe. Core spawns before attaching its listeners. This is source-level
+evidence, not proof that this race caused today's failure; the dependency also
+breaks its loop without an exit event on read errors. A deterministic reproducer
+must distinguish those cases before modifying the adapter/dependency. The
+packaged Node runtime uses a different native PTY backend. Do not weaken the
+test or label this repaired. Candidate release remains blocked.
+
+One live confidential SDK request returned exact `PONG`, HTTP 200, model
+`openai/gpt-oss-120b`, ID `chatcmpl-3edb9acabd9e3ecc293d000aa30a594b`.
+Catalog upper estimate: $0.011059776, not measured settled spend. The isolated
+profile used the existing encrypted credential without retries, funding or
+session mutation. OAuth/PKCE, credential removal, streaming privacy and approvals
+were fixture-tested, not fresh signed-package interactive acceptance.
+
+Installed signature/Gatekeeper, public homepage/status/API health, download page
+and both DMG links passed. Previous PR CI/security checks are green. Production
+remains `v0.3.0-alpha.1`; no signing, publishing, website changes or Intel
+interactive verification occurred. OnPrem was not touched.
+
 ## September 28, 2026
 
 Public main remains `4c46c96f`; tested candidate is `22e58c3c`. Reviewed all six
