@@ -1,5 +1,43 @@
 # OpenCode Upstream Tracking
 
+## September 30, 2026
+
+Public main remains `4c46c96f`; tested candidate is `a3784837`. Reviewed upstream
+through `2fa3363c924c5c3e367b84a87ae478296a0ed59b`. No source ports: `f66b86ce`
+changes upstream CLI signing/publication, not this application's reviewed
+Electron signing path; its additional CLI entitlements were not imported.
+`2fa3363c` corrects upstream hosted pricing documentation. Confidential inference
+and catalog remain pinned to `https://api.confidential.trustedrouter.com/v1`.
+
+Desktop/runtime typechecks passed. Desktop tests: 78 passed; packaging: 3 passed;
+TUI lifecycle: 3 passed; SQLite persistence passed. Core tests: 41 passed and 2
+failed waiting for filesystem watcher readiness (normal and symlinked .git/HEAD).
+The full runtime suite was stopped, incomplete, under severe host contention.
+All four previously problematic PTY HTTP tests passed before it was stopped;
+this does not establish their historical root cause or clear the release gate.
+
+Observed host load averages were 176.69/97.07/73.23, with multiple unrelated
+Python test workloads and a busy fseventsd. Free disk space was about 392 GiB.
+Tests normally taking hundreds of milliseconds reached 15-20 seconds. Contention
+is a plausible contributor to watcher failures, not a proven root cause. Only
+PID 54438 was terminated after lsof confirmed its cwd was today's isolated
+worktree; the test session exited 143. Other processes were not interrupted.
+No retry-to-green, timeout changes or security-gate weakening occurred.
+
+One live request through the confidential API returned exact PONG, HTTP 200,
+model `openai/gpt-oss-120b`, ID `chatcmpl-dd5cad2f03f4c086f8e6a231cb21436d`.
+Catalog upper estimate: $0.011059776, not measured settled spend. Existing
+encrypted credentials were read from an isolated profile without retries,
+funding or user-session mutation. OAuth, sign-out, privacy, stream/tool shape
+and credential tests used fixtures rather than fresh signed-package interaction.
+
+Installed signature/Gatekeeper, homepage/status/confidential API health, download
+page and both released DMG links passed. The endpoint-change PR's CI and security
+checks passed. A fresh production build, subprocess smokes, signing and packaged
+interactive acceptance were deferred under this load, not reported as passed.
+Production remains `v0.3.0-alpha.1`; no publishing or website changes. Complete
+the full gates on a quiet/dedicated runner before promoting the draft candidate.
+
 ## Confidential API Endpoint Update
 
 On September 29, at the user's request, the desktop catalog and both inference
