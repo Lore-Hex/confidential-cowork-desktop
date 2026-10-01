@@ -1,5 +1,45 @@
 # OpenCode Upstream Tracking
 
+## October 1, 2026
+
+Public main remains `4c46c96f`. Reviewed seven upstream commits through
+`0112a92c416f5ad833d96e7a8308441f0a875d94`. Ported `97a86b76` as `70d136f4`
+with attribution: plugin display names use the platform path separator.
+No routing, credential, tool-approval or telemetry behavior changed.
+
+Deferred `e9f8a210`: adds namespaced session/parent identity headers to model
+requests. This is additional metadata and requires explicit privacy review, not
+silent import. The confidential bridge currently rebuilds outgoing requests, but
+that does not justify adopting the broader runtime policy without review.
+Skipped `9b4882db` (ad-hoc CLI signing, not the reviewed Electron release path),
+`82ea3a3a` (upstream version churn), `28e13d9f` (issue/PR compliance grace),
+`62ac31eb` and `0112a92c` (upstream issue ownership).
+
+Desktop/runtime/TUI typechecks passed. Desktop tests: 78 passed; packaging: 3
+passed; TUI lifecycle: 3 passed; SQLite persistence passed. Production build and
+actual subprocess output under Node and Electron passed. Native Windows UI
+execution was not tested; the imported separator change passed TUI typechecking.
+
+Full runtime: 3,589 passed, 22 skipped, 1 todo, 2 failures across 256 files:
+the recurring exited-PTY state failure and `returns declared worktree errors`
+(HTTP 407 instead of expected local 400). One isolated diagnostic run of the
+experimental HTTP file passed all five tests. That does not waive the full-suite
+failure or establish its cause. Core suite: 38 passed, 5 watcher-readiness
+failures. Initial host load averages were 28.30/31.03/24.87, lower than yesterday
+but still busy. No timeouts or assertions were weakened; release remains blocked.
+
+One isolated SDK request through `https://api.confidential.trustedrouter.com/v1`
+returned exact PONG, HTTP 200, model `openai/gpt-oss-120b`, request
+`chatcmpl-75ad4c5b7ccca629b4d7bcb73da276b5`. Catalog upper estimate: $0.011059776,
+not measured settlement cost. Used existing encrypted credentials without
+retries, funding, alternate-host fallback or changes to an active user session.
+OAuth/PKCE, credentials, sign-out, streaming and approval checks used fixtures;
+fresh signed-package interactive acceptance was not performed.
+
+Installed signature/Gatekeeper, homepage/status/confidential API health, download
+page and both DMGs passed. Production remains `v0.3.0-alpha.1`. No signing,
+publication, website changes or interactive Intel verification occurred.
+
 ## September 30, 2026
 
 Public main remains `4c46c96f`; tested candidate is `a3784837`. Reviewed upstream
