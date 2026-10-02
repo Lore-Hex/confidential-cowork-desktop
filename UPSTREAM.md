@@ -1,5 +1,38 @@
 # OpenCode Upstream Tracking
 
+## October 2, 2026
+
+Reviewed all seven upstream commits through
+`1ddb0873aee50d209d1a8d7f91b89c5daf692d49`. Ported the CLI test isolation
+change from `a79ecfe109294909a239c98fb89f02979d5aa10b` as `f8ccd16c`;
+the unknown-model wall-clock assertion and timeout remain unchanged. Its focused
+suite passed all 13 tests. The other changes concern hosted stats, S3 retirement,
+and Nix hashes, not this desktop product. The earlier identity-header privacy
+review remains deferred. This is a reviewed selective port, not full upstream parity.
+
+Catalog and inference remain pinned to
+`https://api.confidential.trustedrouter.com/v1`, with SDK regional failover
+disabled. OAuth retains its separate TrustedRouter control-plane URL.
+Desktop and runtime typechecks, 78 desktop tests, 3 packaging tests, 3 TUI
+lifecycle tests, Node SQLite persistence, production build and subprocess
+smokes under both Node and Electron passed.
+
+The full runtime suite, before the isolated upstream test-only port, finished
+with 3,590 passed, 22 skipped, 1 todo and 1 failed across 256 files. The recurring
+exited-PTY state regression remains unresolved. Core tests finished with 38
+passed and 5 filesystem-watcher readiness failures. No assertions or timeouts
+were weakened. These failures block release; isolated passing checks do not
+waive them.
+
+One SDK call to the confidential API returned HTTP 200 and exact PONG, model
+`openai/gpt-oss-120b`, request `chatcmpl-19c5f1661df5bd05d0459b310c379f89`.
+The catalog-based upper estimate was $0.011059776, not measured settled cost.
+The check used an isolated profile and an existing encrypted credential without
+retries or alternate-host fallback. API health and download page returned 200.
+Installed-app signature and Gatekeeper verification passed outside the sandbox.
+No fresh signed-package OAuth or Intel interactive acceptance was performed.
+Production remains v0.3.0-alpha.1; this candidate has not been released.
+
 ## October 1, 2026
 
 Public main remains `4c46c96f`. Reviewed seven upstream commits through
@@ -455,7 +488,7 @@ or Intel interactive execution. No installed user session was interrupted.
 
 ## Invariants
 
-Keep TrustedRouter at `https://api.trustedrouter.com/v1`, confidential-only routing,
+Keep TrustedRouter at `https://api.confidential.trustedrouter.com/v1`, confidential-only routing,
 fail-closed catalog eligibility, PKCE, encrypted credentials, explicit tool approvals,
 disabled telemetry, and no alternate inference backend. Publish only after signed
 packaged-app verification and the reviewed website rollout. OnPrem is unrelated.
