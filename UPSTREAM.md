@@ -1,5 +1,44 @@
 # OpenCode Upstream Tracking
 
+## October 3, 2026
+
+Remote main remains `4c46c96f`; isolated verification used candidate `c3eef2d3`.
+Reviewed upstream through `907b3bc518fa48e90e8ec24dd327d13eee71c36c`.
+No product changes were applicable: `c42ae0d5` and `907b3bc5` add hosted Zen
+documentation, and `108b988a` filters hidden models in the hosted analytics
+service. None changes the confidential desktop runtime. No source was ported
+and no unchanged application release was published.
+
+Full runtime: 3,591 passed, 22 skipped, 1 todo, zero failures across 256 files.
+The previously intermittent exited-PTY test passed without a source change;
+this is not proof of a root-cause fix. Core: 38 passed, five failures waiting
+for filesystem watcher readiness (root events, cleanup, ignored index, HEAD,
+and symlinked HEAD). No assertions or timeouts were changed or waived. Host
+load was 345.35/153.41/81.75 at the start and remained high; causation is not
+established. These core failures still block release.
+
+Desktop and runtime typechecks passed. All 78 desktop tests passed with the
+required loopback permissions; an initial sandboxed run failed six socket-bound
+OAuth/bridge tests before those permissions were supplied. Packaging contracts
+(3), TUI lifecycle (3), Node SQLite persistence, production build, and actual
+subprocess-output smokes under Node and Electron passed. OAuth/PKCE, sign-out,
+credential handling, confidential routing, and tool approval coverage used
+fixtures, not fresh signed-package interactive acceptance.
+
+One isolated live SDK request to `https://api.confidential.trustedrouter.com/v1`
+returned exact PONG with HTTP 200, model `openai/gpt-oss-120b`, request
+`chatcmpl-98a427efdf4e225ba357afe098f24f27`. Catalog upper estimate:
+$0.011059776, not measured settlement. Existing encrypted credentials were
+used without retries, alternate-host fallback, funding, or session mutation.
+
+Installed signature and Gatekeeper passed. Homepage, status, confidential API
+health, download page and both published DMG links returned HTTP 200.
+Production remains `v0.3.0-alpha.1`. No signing, publication, website deployment,
+new-package checksum/provenance verification, or interactive Intel testing was
+performed. The existing PR's CI and secret scan are green but do not include
+the failing native watcher suite. Next release work remains isolating that
+failure on a quiet macOS runner, then fresh signed-package acceptance.
+
 ## October 2, 2026
 
 Reviewed all seven upstream commits through
