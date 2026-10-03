@@ -32,7 +32,7 @@ bun run build
 bun run preview
 ```
 
-The main process uses `@lore-hex/trusted-router` with `https://api.trustedrouter.com/v1`.
+The main process uses `@lore-hex/trusted-router` with `https://api.confidential.trustedrouter.com/v1`.
 Only it can decrypt the stored API key. The bundled runtime receives a scoped
 local capability, not the real key.
 
