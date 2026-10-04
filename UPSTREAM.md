@@ -1,5 +1,45 @@
 # OpenCode Upstream Tracking
 
+## October 4, 2026
+
+Remote main remains `4c46c96f`; the isolated candidate is `b05e1b43`.
+Upstream is unchanged at `907b3bc518fa48e90e8ec24dd327d13eee71c36c`.
+No product source changes or policy changes were imported.
+
+Full runtime: 3,590 passed, 22 skipped, 1 todo, one failure across 256 files.
+Today's failure is `pty HttpApi bridge > hides exited sessions on the legacy
+surface`: the endpoint returned 200 rather than 404 after the test's bounded
+wait. This is distinct from the previously reported v2 exited-session assertion;
+no common root cause has been proven. Core: 38 passed and five watcher readiness
+failures. Neither gate was waived or rerun until green.
+
+A separate direct diagnostic under Node used the same native Parcel watcher
+binding with the fs-events backend, awaited subscription, and created a file in
+a disposable temporary directory. No event arrived within five seconds. This
+reproduces a watcher symptom outside OpenCode's Effect/event layer; it does not
+prove whether the native binding, macOS, or host conditions are responsible.
+No system services or other processes were restarted. Initial host load was
+28.47/25.16/18.91, much lower than October 3 but not idle. Next diagnosis should
+compare this direct probe on a quiet macOS runner before changing app timeouts.
+
+Desktop/runtime typechecks, 78 desktop tests, 3 packaging contract tests,
+3 TUI lifecycle tests, Node SQLite persistence, production build, and actual Node/Electron
+subprocess-output smokes passed. OAuth/PKCE, sign-out, credential handling,
+confidential catalog/fail-closed behavior and tool approval checks used fixtures.
+
+One isolated live SDK call to `https://api.confidential.trustedrouter.com/v1`
+returned HTTP 200 and exact PONG, model `openai/gpt-oss-120b`, request
+`chatcmpl-a1a9db12e169b6e079ff07df300210f4`. Catalog upper estimate was
+$0.011059776, not measured settlement. No retries, automatic funding,
+alternate-host fallback, or active-session changes were used.
+
+Installed-app signature/Gatekeeper, homepage, status, confidential API health,
+download page and both published DMG links passed. Existing PR CI and secret
+scan are green but omit the full native suites above. Production remains
+`v0.3.0-alpha.1`. No release, signing, new-package checksum/provenance checks,
+website deployment, fresh interactive OAuth, or Intel interactive testing
+occurred. The published app remains untouched while the gates are red.
+
 ## October 3, 2026
 
 Remote main remains `4c46c96f`; isolated verification used candidate `c3eef2d3`.
