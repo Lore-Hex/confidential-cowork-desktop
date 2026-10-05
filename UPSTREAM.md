@@ -1,5 +1,45 @@
 # OpenCode Upstream Tracking
 
+## October 5, 2026
+
+Remote main remains `4c46c96f`; isolated candidate `7e0ccb70` has no new
+product changes. Upstream remains `907b3bc518fa48e90e8ec24dd327d13eee71c36c`.
+No source ports, security policy changes, or application releases were made.
+
+Desktop/runtime typechecks, 78 desktop main-process tests, 3 packaging contract
+tests, Node SQLite persistence, 3 TUI lifecycle tests, and actual subprocess
+output under both Node and Electron passed. The desktop security checks cover
+OAuth/PKCE, credential persistence/sign-out, confidential catalog and fail-closed
+requests, and tool approval behavior with fixtures rather than live browser
+sign-in or a freshly signed package.
+
+The full runtime run is incomplete, not passed. Host load rose from
+68.76/45.46/39.15 to 131.16/92.36/61.20, and snapshot operations took 5-10
+seconds each. No failed test was recorded before stopping, but large parts of
+the suite had not run. PID 35968 was verified by lsof to belong to this
+worktree's packages/opencode directory. It continued after SIGTERM, so only
+that PID was stopped with SIGKILL (test session exit 137); subsequent ps
+confirmed it was gone. No other workload or system service was interrupted.
+Core tests completed: 38 passed and the same five watcher-readiness failures.
+No timeout or assertion changes were made. Full production build and release
+gates were deferred under contention, not reported as successful.
+
+An initial isolated Electron setup and launcher overlapped, causing extraction
+to fail before the smoke script or HTTP request ran. The generated runtime was
+moved aside inside this worktree, reinstalled, and awaited before launching.
+One actual SDK request to https://api.confidential.trustedrouter.com/v1 then
+returned HTTP 200 and exact PONG, model `openai/gpt-oss-120b`, request
+`chatcmpl-27961ceec2d8a3cb5a8592950f4b888f`. Catalog upper estimate was
+$0.011059776, not measured settlement. No inference retries, alternate-host
+fallback, automatic funding, or active user profile changes occurred.
+
+Installed signature/Gatekeeper, homepage, status, confidential API health,
+download page and both DMG links passed. Existing PR CI/secret scan are green,
+but they do not cover the incomplete full runtime/native gates. Production
+remains `v0.3.0-alpha.1`. No fresh package checksums/provenance, interactive
+OAuth/Intel acceptance, signing, or website deployment were performed. Complete
+the native/full-suite checks on a quiet runner before promoting this candidate.
+
 ## October 4, 2026
 
 Remote main remains `4c46c96f`; the isolated candidate is `b05e1b43`.
