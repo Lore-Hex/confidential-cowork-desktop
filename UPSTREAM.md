@@ -1,5 +1,45 @@
 # OpenCode Upstream Tracking
 
+## October 6, 2026
+
+Remote main remains `4c46c96f`; isolated candidate `712feb54` was tested.
+Reviewed 11 upstream commits through
+`3f393d78bfc3f0826b2c7080e57964c235704695`; no desktop source was ported.
+`fa495675` updates the GitLab AI provider, which this confidential-only desktop
+does not enable; the dependency update is not imported. `652c090d` changes
+Nix hashes; `77239205` removes upstream marketing artifacts; `3569ebe5`
+changes upstream hosted deployment infrastructure; `a2aea963` changes issue
+triage. `f3228497`, `219c2268`, `f03046d9`, and `3f393d78` affect hosted
+console/stats; `a5c0c36e` and `54e51ea5` affect ecosystem documentation.
+No new security/privacy policy or alternative provider was introduced.
+
+Full runtime completed: 3,589 passed, 22 skipped, 1 todo, two failures across
+256 files. Both failures are in httpapi-v2-pty.test.ts: exited-session state
+remained running, and the plugin shell-environment test ended with interrupted
+fibers. A common cause has not been established. Core tests: 38 passed, the
+same five watcher-readiness failures. No retry-to-green, timeout changes or
+gate waivers. Initial host load was 9.91/24.16/21.09, lower than October 5;
+this does not resolve the previously recorded native watcher symptom.
+
+Desktop/runtime typechecks, 78 desktop main-process tests, 3 packaging contracts,
+3 TUI lifecycle tests, Node SQLite persistence, production build, and actual
+Node/Electron subprocess output passed. OAuth/PKCE, sign-out, credential
+storage, catalog/fail-closed routing, and approval regressions used fixtures.
+No fresh signed-package interactive OAuth or Intel execution was performed.
+
+One live isolated SDK request to https://api.confidential.trustedrouter.com/v1
+returned HTTP 200 and exact PONG, model `openai/gpt-oss-120b`, request
+`chatcmpl-74d0e429364089d0c8b401588b8cc5ee`. The catalog upper estimate was
+$0.011059776, not measured settlement. No inference retries, alternate-host
+fallback, automatic funding, or active-profile changes occurred.
+
+Installed signature/Gatekeeper, homepage, status, confidential API health,
+download page and both published DMG links passed. Existing PR CI and secret
+scan are green but do not cover all native gates. Production remains
+`v0.3.0-alpha.1`; no signing, publication, new-package checksums/provenance,
+or website deployment occurred. Release remains blocked by the native tests;
+do not infer a clean release gate from successful SDK or mocked desktop tests.
+
 ## October 5, 2026
 
 Remote main remains `4c46c96f`; isolated candidate `7e0ccb70` has no new
