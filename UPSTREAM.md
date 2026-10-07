@@ -1,5 +1,44 @@
 # OpenCode Upstream Tracking
 
+## October 7, 2026
+
+Remote main remains `4c46c96f`; isolated candidate `f9c024c6` was tested.
+Reviewed eight upstream commits through
+`ecc4916b5a9608c30e6dd58a67f2137b594407ca`. No source ports were applicable.
+`83802d80` changes the direct xAI SDK and only filters tool-result images when
+model.api.npm is @ai-sdk/xai; this desktop uses @ai-sdk/openai-compatible through
+the confidential TrustedRouter bridge. Its adapter changes were not imported.
+`4ac0d9c3` changes Nix hashes; `63be8f95` changes upstream release versions;
+`d5772b1e`, `adf32d6c`, `52a6c358`, and `e2564336` change hosted Zen docs;
+`ecc4916b` changes hosted usage attribution. No security policy changed.
+
+All automated local gates completed successfully today: full runtime 3,591
+passed, 22 skipped, 1 todo, zero failures across 256 files; core 43 passed,
+including native watcher tests; desktop 78 passed; packaging contracts 3 passed;
+TUI lifecycle 3 passed; desktop/runtime typechecks, Node SQLite persistence,
+production build, and actual Node/Electron subprocess-output smokes passed.
+Neither the intermittent PTY issue nor the prior native watcher symptom received
+a source fix. Today's green result does not establish their root cause. No
+assertion, timeout or gate was relaxed and no test was retried to turn it green.
+
+One isolated live SDK call to https://api.confidential.trustedrouter.com/v1
+returned HTTP 200 and exact PONG, model `openai/gpt-oss-120b`, request
+`chatcmpl-7e2cc09f3aa8c97cbb04bd39caeddeee`. Catalog upper estimate:
+$0.011059776, not measured settlement. Existing encrypted credentials were used
+without retries, alternate-host fallback, funding or active-profile changes.
+OAuth/PKCE, credential removal, sign-out and approval regressions used fixtures.
+
+Installed signature/Gatekeeper, public homepage/status/API health, download page
+and both released DMG links passed. Existing PR CI and secret scan are green.
+Production remains `v0.3.0-alpha.1`; the signing source branch still points to
+released source `e8e6207b`. No unchanged application was republished. Promotion
+of the earlier pending source changes still requires a versioned immutable
+signing candidate, signed/notarized artifacts with checksum/provenance checks,
+and fresh packaged clean-install OAuth, restart/sign-out, inference and approval
+acceptance. Those release steps, website deployment and interactive Intel
+verification were not performed today. Do not carry forward yesterday's native
+test failures as today's result, or describe these local passes as a release.
+
 ## October 6, 2026
 
 Remote main remains `4c46c96f`; isolated candidate `712feb54` was tested.
