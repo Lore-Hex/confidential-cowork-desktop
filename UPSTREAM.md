@@ -1,5 +1,40 @@
 # OpenCode Upstream Tracking
 
+## October 8, 2026
+
+Reviewed nine upstream commits through
+`5d9cd9b259f0456522f318a7435501d03cfbee79` from isolated candidate `e60dbf82`.
+No source ports were applicable. `5e2df97a` adds ultrafast service-tier support
+to the direct OpenAI SDK; this desktop uses openai-compatible through the
+confidential TrustedRouter bridge. The other changes affect hosted console,
+model documentation, generated files and Nix metadata. No hosted proxy or
+telemetry changes were imported. The candidate retains
+https://api.confidential.trustedrouter.com/v1 for inference and catalog, with
+OAuth at https://trustedrouter.com/v1 and no alternate-host fallback.
+
+Full runtime: 3,590 passed, 22 skipped, one todo and one failure across 256
+files. The v2 PTY plugin shell-environment test ended with interrupted fibers
+after 25.6 seconds. The exited-session test passed. Yesterday's clean result
+does not resolve this intermittent failure; no retries or gate relaxations.
+Core: 43 passed, including watchers. Desktop: 78 passed. Packaging contracts:
+3 passed. TUI lifecycle: 3 passed. Desktop/runtime typechecks, Node SQLite
+persistence, production-channel build and actual Node/Electron subprocess-output
+checks passed.
+
+One isolated live SDK request returned HTTP 200 and exact PONG, model
+`openai/gpt-oss-120b`, request `chatcmpl-195bd6abbace41d6f28a0d4c026d6f32`.
+Catalog upper estimate was $0.011059776, not settled spend. No inference retry,
+funding, alternate-host fallback or active-profile mutation was performed.
+OAuth and approval regression coverage used fixtures, not a fresh packaged
+interactive acceptance run. Installed signature/Gatekeeper and public homepage,
+status, API health, download page and both published DMG URLs passed.
+
+Production remains v0.3.0-alpha.1. No signed release or website update was made.
+The pending API hostname change is not in the published download. Release still
+requires a clean runtime gate, immutable signed/notarized package and fresh
+clean-install OAuth, restart/sign-out, inference and tool-approval acceptance.
+No interactive Intel verification was performed.
+
 ## October 7, 2026
 
 Remote main remains `4c46c96f`; isolated candidate `f9c024c6` was tested.
