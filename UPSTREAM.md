@@ -1,5 +1,40 @@
 # OpenCode Upstream Tracking
 
+## October 9, 2026
+
+Reviewed six upstream commits through
+`388406238bd5ca15564a762840a2362c3a45bd9c` on isolated candidate `0393974b`.
+Remote main remains `4c46c96f`. No applicable desktop ports: `5a8c1d81`,
+`9c1fdf8f` and `687664c6` change hosted Zen inference proxying; `03146dab`
+adds hosted Step 5 marketing content, `fa0073c2` regenerates console assets,
+and `38840623` changes Zen documentation. No hosted routing, telemetry or
+privacy policy change was imported.
+
+Full runtime: 3,590 passed, 22 skipped, one todo and one failure across 256
+files. The v2 PTY exited-session test still reported running after its 20-second
+deadline instead of exited with code 4. Yesterday's plugin shell-environment
+failure did not recur. A common cause is not established, and the exit-state
+failure remains a release blocker. No retry, timeout change or gate waiver.
+
+Desktop/runtime typechecks, 78 desktop tests, 43 core tests including native
+watchers, three packaging contracts, three TUI lifecycle tests, Node SQLite
+persistence, production-channel build and actual Node/Electron subprocess
+output checks passed. OAuth/PKCE, credentials, sign-out and tool approval
+regressions used fixtures; these are not fresh signed-package acceptance.
+
+One isolated confidential SDK request returned HTTP 200 and exact PONG,
+model `openai/gpt-oss-120b`, request
+`chatcmpl-b2b705b0c87176e7ee390f2622b01605`. Catalog upper estimate:
+$0.011059776, not measured settlement. No retry, alternate-host fallback,
+funding or active-profile mutation. Installed signature and Gatekeeper passed;
+homepage, status, confidential API health, download page and both published
+DMG links returned 200. Existing candidate CI and secret scan passed.
+
+Production remains v0.3.0-alpha.1 at `e8e6207b`. No source update was published
+or website changed. The candidate's confidential API hostname is still pending
+release. Signed-package clean-install OAuth, restart/sign-out, inference and
+tool approval remain required; no interactive Intel verification was performed.
+
 ## October 8, 2026
 
 Reviewed nine upstream commits through
