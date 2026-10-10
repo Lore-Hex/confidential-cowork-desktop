@@ -1,5 +1,40 @@
 # OpenCode Upstream Tracking
 
+## October 10, 2026
+
+Reviewed upstream through `055d95bb7e278c94baf06235a52cac79dd13ba67` from
+isolated candidate `b9dfec8c`. Ported that commit as `ed722a17`, retaining
+upstream attribution, to recognize five C++ module filename extensions.
+Added five regression cases in `40003268`; focused filename/lifecycle tests
+passed (10 tests). Skipped `b2a3926e`: it changes the disabled direct Copilot
+backend, not the confidential openai-compatible bridge. No security policy,
+host fallback, telemetry or credential behavior changed.
+
+Desktop/runtime typechecks, 78 desktop tests, 43 core tests, three packaging
+contracts, Node SQLite persistence, production build and actual Node/Electron
+subprocess-output checks passed. OAuth/PKCE, credential persistence, sign-out
+and allow/deny coverage used fixtures, not fresh signed-package acceptance.
+
+One isolated live SDK request to https://api.confidential.trustedrouter.com/v1
+returned HTTP 200 and exact PONG, model `openai/gpt-oss-120b`, request
+`chatcmpl-a1eacd6b0c8826f1eeda451b712dd29d`. Catalog upper estimate:
+$0.011059776, not measured settlement. No retry, alternate-host fallback,
+funding or active-profile mutation. Installed signature/Gatekeeper, public
+homepage/status/API health, download page and both released DMG links passed.
+
+Full runtime passed: 3,591 tests, 22 skipped, one todo, zero failures across
+256 files. No test was retried or assertion/timeout relaxed. The previous
+intermittent PTY failures did not recur, but were not fixed by this filename
+change; their root cause remains unresolved. Do not present the previous day's
+failure as today's outcome or today's pass as proof of a repair.
+
+Production remains v0.3.0-alpha.1 (`e8e6207b`). The reviewed signing workflow
+still requires a promoted immutable source SHA; it was inspected, not run.
+No new signed artifacts or website deployment were produced. Promotion remains
+pending resolution of the intermittent terminal reliability concern and fresh
+signed-package clean-install OAuth, restart/sign-out, inference and approval
+acceptance. No interactive Intel verification was performed.
+
 ## October 9, 2026
 
 Reviewed six upstream commits through
