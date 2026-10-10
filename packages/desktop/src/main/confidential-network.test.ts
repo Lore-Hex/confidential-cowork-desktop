@@ -13,6 +13,7 @@ test("renderer can only contact its own local runtime and packaged assets", () =
   for (const url of [
     "https://api.openai.com/v1/chat/completions",
     "https://api.trustedrouter.com/v1/chat/completions",
+    "https://api.confidential.trustedrouter.com/v1/chat/completions",
     "http://127.0.0.1:12346/session",
     "file:///etc/passwd",
     "oc://evil/index.html",
