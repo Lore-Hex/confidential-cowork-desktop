@@ -1,5 +1,49 @@
 # OpenCode Upstream Tracking
 
+## October 11, 2026
+
+Important migration boundary: upstream dev now points to
+`e31136bdbdb43e934d8bbd81e75a2065a2625699`. Merge
+`5caf1f9f6f5f30e13fc50a788ad953d97ae3748f` promotes V2 onto dev, with
+`055d95bb7e278c94baf06235a52cac79dd13ba67` as its first parent. GitHub's
+compare reports 4,393 commits ahead and no divergence; the tree diff spans
+7,991 files. Do not treat the merged V2 history as routine daily patches or
+claim it was fully reviewed. The last completed selective-review boundary
+remains `055d95bb`. Today's candidate is `0bfdae02`; public main is `4c46c96f`.
+
+No application changes were imported. V2 changes desktop IPC from window.api
+to window.electron/MessagePort RPC, the runtime/package layout and provider
+infrastructure. Its command-palette fix targets a file absent from this
+candidate; project archival depends on new database/API surfaces. Hosted
+console, update service and direct Copilot changes are not imported either.
+Migration requires a separate compatibility pass: map the confidential bridge
+and encrypted PKCE credentials onto the new IPC/runtime, retain provider/network
+restrictions, audit remote pairing/plugin/update paths, then run equivalent
+allow/deny, fail-closed and signed-package acceptance checks. No security or
+privacy policy change is approved or implied by upstream's promotion.
+
+Full runtime completed with 3,590 passing, 22 skipped, one todo and one failure
+across 256 files. HttpApi error middleware's unknown-defect test expected a
+sanitized 500 but received 404 at httpapi-error-middleware.test.ts:33. That
+contract remains unverified in this run; the cause is not established and
+this is not evidence of a production content leak. PTY tests did not fail
+today. No retry, timeout relaxation or gate waiver was used.
+
+Independent checks passed: desktop/runtime typechecks, 78 desktop tests,
+43 core tests, 10 filename/lifecycle tests, three packaging contracts, Node
+SQLite persistence, production build and actual Node/Electron shell output.
+OAuth/PKCE, sign-out, credential and tool-approval regression tests used fixtures.
+One live isolated SDK request returned HTTP 200 and exact PONG, model
+`openai/gpt-oss-120b`, request `chatcmpl-f1ea0fbfbc737653b9367ee4834fd942`.
+Catalog upper estimate: $0.0109463424, not settled spend. No retries, funding,
+alternate hosts or active-profile changes. Installed signature/Gatekeeper,
+homepage, status, confidential API health, download page and both DMG links passed.
+
+Production remains v0.3.0-alpha.1 (`e8e6207b`), unchanged. No signing workflow,
+new artifact publication, website deployment or interactive Intel acceptance
+was performed. Do not confuse today's SDK smoke with a fresh signed-package
+clean-install OAuth/restart/sign-out/inference/approval acceptance test.
+
 ## October 10, 2026
 
 Reviewed upstream through `055d95bb7e278c94baf06235a52cac79dd13ba67` from
