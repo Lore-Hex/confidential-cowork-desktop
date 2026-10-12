@@ -1,5 +1,51 @@
 # OpenCode Upstream Tracking
 
+## October 12, 2026
+
+Inspected the 18 new commits after `e31136bd` through
+`773d8621d6bcd311067b225d837c917b3e83573e`. The V2 migration backlog remains
+open; this is not a claim of full V2 compatibility or review. Started from
+`0c7782d5ed` in an isolated worktree; public main remains `4c46c96f`.
+
+Backported `d21b0790a6c146815f28fea604e41e922f009590` to the pre-V2 Markdown
+parser as `eba404c583`, with attribution. Four new link-label cases failed
+before the parser change; all eight parser/regression tests passed afterward.
+Formatting, code escaping and literal escapes now render inside link labels;
+external-link attributes remain unchanged. UI typecheck passed.
+
+Reviewed `4fbdea2d` and its test correction `e5f4bf4c`: their V2 codemode fetch
+helper does not exist here. The current interpreter has no direct fetch global;
+the registered webfetch tool rejects non-HTTP(S) URLs before permission and
+network access. Do not import a V2 networking surface to apply this patch.
+`854b3bb9` is V2 Windows ARM packaging and native dependency work, deferred with
+that migration; no unsupported Windows release was produced. Remote pairing
+(`38454c6e`), update-service/install changes (`727fd603`, `1c63fe9a`,
+`47e5e715`, `707de583`, `e5a557ef`), hosted console/stats (`83f2b6f6`,
+`ca19780d`), direct ChatGPT (`35ef2294`), and Nix/docs/release changes are not
+imported. No confidentiality, credential, telemetry or fallback policy changed.
+
+Full runtime: 3,589 passed, 22 skipped, one todo and two failures across 256
+files. V2 PTY exit state remained running instead of exited/code 4; legacy PTY
+lookup returned 200 rather than hiding an exited session with 404. Yesterday's
+error-middleware failure did not recur. Native failure causes remain unresolved;
+the Markdown parser change does not repair or explain them.
+
+Passed: desktop/runtime typechecks, 78 desktop tests, 10 filename/lifecycle
+tests, three packaging contracts, Node SQLite persistence, production build,
+and actual Node/Electron subprocess-output smokes. Core: 39 passed, four native
+watcher tests failed (root events, .git/index, .git/HEAD and symlinked HEAD).
+No retry, timeout relaxation or gate waiver. OAuth/PKCE, credentials, sign-out
+and approvals were fixture-based, not fresh signed-package acceptance.
+
+One isolated live SDK request returned HTTP 200 and exact PONG, model
+`openai/gpt-oss-120b`, request `chatcmpl-d9ee3e6822c3fafb05fce1bbd3a8f81d`.
+Catalog upper estimate: $0.0109463424, not actual settlement. No retry,
+alternate host, funding or active-profile mutation. Installed signature and
+Gatekeeper, public homepage/status/API health/download page and both released
+DMG URLs passed. Production remains v0.3.0-alpha.1, unchanged; failing native
+checks block promotion. No signing, notarization, website deployment or Intel
+interactive acceptance was performed.
+
 ## October 11, 2026
 
 Important migration boundary: upstream dev now points to
