@@ -1,5 +1,51 @@
 # OpenCode Upstream Tracking
 
+## October 13, 2026
+
+Triaged 51 upstream commits after `773d8621` through
+`417f120ee3c7bbfe2df4b02fe01859eeec96265d`. No source port today. Candidate
+`b27174cc9d` and remote main `4c46c96f` are unchanged. The V2 migration and its
+full security review remain pending; this is not full upstream parity.
+
+Do not import `b8f925e51c` per-project automatic permissions: it conflicts with
+this client's explicit tool-approval requirement. Plugin credential activation
+and system-configuration precedence changes also need security review, not
+silent adoption. `1c74b9f020`'s prompt-start autocomplete restriction is already
+present in our implementation. `0cb434775c` edits the new V2 tool plugin and
+matching algorithm, not our legacy edit tool; porting requires adaptation and
+byte-preservation/permission tests. Promise-tool error handling, provider-body
+compatibility, cache settings and timeouts target V2 surfaces. Windows ARM
+packaging, hosted console/update service, docs and release changes remain
+outside this macOS candidate. No confidentiality or fallback policy changed.
+
+Today's V2 PTY exit-state failure occurred before the core watcher suite or
+production build was started. Thus overlap with those two checks cannot explain
+this occurrence. This does not prove a root cause. Bun tests use bun-pty 0.4.8;
+packaged Node uses @lydell/node-pty. Actual Node and Electron shell-output
+smokes passed, which is narrower than proving interactive PTY reliability.
+
+Full runtime: 3,590 passed, 22 skipped, one todo and one V2 PTY exit-state
+failure across 256 files. The core suite then ran separately: 39 passed and
+four watcher failures (root events, .git/index, .git/HEAD and symlinked HEAD).
+The build was not started until both suites completed. Their overlap therefore
+does not explain today's watcher failures either. No retry, timeout change,
+test skip or gate waiver. Desktop/runtime typechecks, 78 desktop tests, 10
+filename/lifecycle tests, eight Markdown tests, three packaging contracts and
+Node SQLite persistence and the subsequent production build passed. Fresh
+signed-package acceptance remains pending.
+
+One isolated live confidential SDK request returned HTTP 200 and exact PONG,
+model `openai/gpt-oss-120b`, request
+`chatcmpl-44ab3a30b4a97188f3323965a44dfa73`. Catalog upper estimate:
+$0.0106762624, not settled spend. No retries, funding, alternate-host fallback
+or active-profile changes. OAuth/PKCE, credentials, sign-out and approvals use
+fixture regression tests, not fresh signed-package interactive acceptance.
+
+Installed signature/Gatekeeper, public homepage, status, confidential API
+health, download page and both released DMG URLs passed. Production remains
+v0.3.0-alpha.1 (`e8e6207b`). No new signed artifacts, website deployment or
+interactive Intel verification. OnPrem remains untouched.
+
 ## October 12, 2026
 
 Inspected the 18 new commits after `e31136bd` through
