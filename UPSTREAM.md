@@ -1,5 +1,59 @@
 # OpenCode Upstream Tracking
 
+## October 15, 2026
+
+Fetched upstream `af6ec839793da9a48698cb17da567c770164742d`; triaged the
+42 commits since yesterday's fetched `a7ad408dfe`. No source port. Remote main
+remains `4c46c96f`, the candidate source is `0095c1df4c`, and the V2 migration
+is unfinished. Yesterday's uncommitted endpoint tests and migration notes in
+`cowork-latest-update` were preserved, not silently included in this audit.
+
+New upstream database error redaction (`a8fc567c5c`) targets the V2 Effect
+Drizzle query layer, absent from this candidate. Carry it into the V2 migration.
+MCP permission metadata/capability changes, config substitution/instruction
+loading, provider name normalization, compaction and Responses namespace fixes
+also target V2 implementations. The broader `*.localhost` MCP OAuth exception
+(`b55f220a17`) is not imported silently. V2 UI/TUI refactors, hosted-console
+changes, Windows service/PowerShell fixes and release churn are not ports to
+this macOS candidate. No routing, tool-approval or privacy policy changed.
+
+Fresh isolated installation failed extracting the pinned `ghostty-web` GitHub
+dependency: Bun reported ZlibError / InstallFailed. A separate download of the
+same commit's codeload archive passed `gzip -t`; that does not prove why Bun's
+download/extraction failed. No lockfile change or integrity bypass. Fresh-install
+reproducibility is unverified. Independent tests below used the existing clean
+October 13 worktree at the identical candidate SHA with installed dependencies,
+not the failed installation. No user session was changed.
+
+Results:
+
+* Full runtime: 3,591 passed, 22 skipped, one todo, zero failures (256 files).
+* Native core gate, run after runtime: 38 passed, five watcher failures for
+  root events, cleanup, .git/index, .git/HEAD and symlinked .git/HEAD. No retry
+  or gate waiver. The production build started only after these tests finished.
+* Desktop/runtime typechecks, 78 desktop tests, three packaging contracts,
+  Node SQLite persistence, eight Markdown tests and production build passed.
+* Ten TUI filename/lifecycle tests passed. The initial sandboxed invocation
+  reported blocked default-state lock writes; reran with isolated XDG paths
+  and passed, with expected missing fresh-profile KV warnings.
+* Actual Node and isolated Electron utility-process shell output and exit
+  assertions passed. These are not packaged interactive tool-approval tests.
+* Live SDK smoke returned HTTP 200 and exact PONG from `openai/gpt-oss-120b`,
+  request `chatcmpl-b1328b7a8418ca48c63eb04dd14ea04a`, through
+  `https://api.confidential.trustedrouter.com/v1`. One inference attempt, no
+  retry or funding. Catalog-based upper estimate $0.0106762624, not settled
+  spend. Existing OS-encrypted credential was read in an isolated profile;
+  no secret or user conversation was logged.
+* Installed release passed deep codesign and Gatekeeper. Homepage, status,
+  confidential API health, desktop download page and both existing DMG links
+  returned HTTP 200. Candidate PR #2 CI was green at the existing head.
+
+Production stays `v0.3.0-alpha.1` at `e8e6207bb7`. No new signing, notarization,
+package publication or website changes. Fresh packaged OAuth/restart/sign-out,
+streaming/tool approval acceptance and Intel interactive verification were not
+performed. Watcher failures and incomplete V2 integration remain release gates;
+today's clean runtime run does not establish a fix for prior intermittent faults.
+
 ## October 13, 2026
 
 Triaged 51 upstream commits after `773d8621` through
