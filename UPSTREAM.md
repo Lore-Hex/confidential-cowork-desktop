@@ -1,5 +1,56 @@
 # OpenCode Upstream Tracking
 
+## October 16, 2026
+
+Reviewed the 57-commit range after `af6ec83979` through
+`37e3912d8ea5814593b8591bdc85f91cb69949e2` on upstream `dev`.
+Backported `2e7ac8c8ead60bf44c2ae216251f9f8c368cb661` in candidate
+`a53b04073b`: compact counts round to `1.0M` rather than `1000.0K` at 999950.
+The boundary test failed before the change and passed afterward; ordinary
+small/thousand/million counts are also covered. Upstream authors are credited.
+
+The remaining V2 dialog/layout, AI protocol/provider, config, managed-service,
+MCP and sanitized-export changes require adaptation to the new architecture;
+hosted console, model snapshots, release automation and Windows-only changes
+were not imported. V2's documented external-directory allow default
+(`20d172e462`) must not replace explicit tool approvals. Preferred free-provider
+defaults (`8db638c53c`, `4cce6aef4e`) must not introduce fallback providers.
+`775d1d0d71` repairs V2's disabled-Claude-config option and must be retained in
+the migration; this candidate still uses its separate locked runtime config.
+Full V2 parity is not claimed. No security policy changed.
+
+Unlike yesterday, a fresh isolated frozen-lockfile install succeeded without
+changing versions or bypassing integrity checks. This does not establish the
+cause of yesterday's archive extraction failure. All checks below used today's
+isolated worktree, not cached dependencies from a prior checkout.
+
+* Desktop, runtime and TUI typechecks passed. 78 desktop main-process tests,
+  three packaging contracts, Node SQLite persistence, 12 TUI boundary/filetype/
+  lifecycle tests and eight Markdown tests passed. OAuth/PKCE and vault tests
+  are local regression tests, not fresh interactive browser authentication.
+* Full runtime: 3,590 passed, 22 skipped, one todo, one failure across 256 files.
+  The PTY plugin shell-environment case failed with interrupted fibers after
+  about 26 seconds. No retry or test-gate change; yesterday's passing run did
+  not prove that the intermittent defect was fixed.
+* Core ran afterward: 38 passed, five watcher failures (root events, cleanup,
+  .git/index, .git/HEAD and symlinked HEAD). Production build started only after
+  both suites finished and passed. Their overlap cannot explain this occurrence.
+* Actual Node and isolated Electron utility-process shell output and successful
+  exit assertions passed. This is not full interactive tool-approval coverage.
+* Exactly one live confidential SDK request returned HTTP 200 and exact PONG,
+  model `openai/gpt-oss-120b`, request
+  `chatcmpl-8b801a89a16f3ea8f3f1479e40049022`. Catalog-based upper estimate
+  $0.0106762624, not settled spend. Used the confidential hostname, disabled
+  retries and regional fallback, and no funding. Existing encrypted credentials
+  were read in an isolated profile without changing the user's login.
+* Installed release passed codesign and Gatekeeper. Homepage, status, confidential
+  API health, desktop download page and both existing DMG URLs returned 200.
+
+The source backport is a candidate only. Production remains `v0.3.0-alpha.1`
+at `e8e6207bb7`. No signing, notarization, release or website change: native
+failures block release. Fresh signed-package OAuth/restart/sign-out, streaming,
+tool-approval acceptance and interactive Intel checks remain unperformed.
+
 ## October 15, 2026
 
 Fetched upstream `af6ec839793da9a48698cb17da567c770164742d`; triaged the
