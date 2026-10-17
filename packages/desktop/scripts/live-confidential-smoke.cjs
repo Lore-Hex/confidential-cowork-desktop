@@ -12,7 +12,7 @@ async function run() {
   if (!safeStorage.isEncryptionAvailable()) throw new Error("System encryption unavailable")
   const key = safeStorage.decryptString(await readFile(join(root, "trustedrouter.credential")))
   const { TrustedRouter } = await import("@lore-hex/trusted-router")
-  const client = new TrustedRouter({ apiKey: key, baseUrl: "https://api.trustedrouter.com/v1", maxRetries: 0 })
+  const client = new TrustedRouter({ apiKey: key, baseUrl: "https://api.confidential.trustedrouter.com/v1", maxRetries: 0, regionalFailover: false })
   const response = await client.rawRequest("POST", "/chat/completions", {
     timeout: 60000, redirect: "error",
     body: { model: "trustedrouter/confidential", messages: [{ role: "user", content: "Reply exactly PONG. Do not use tools." }], max_tokens: 1024, provider: { min_privacy: "confidential", data_collection: "deny" } },

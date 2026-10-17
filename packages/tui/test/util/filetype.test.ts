@@ -2,6 +2,10 @@ import { describe, expect, test } from "bun:test"
 import { filetype } from "../../src/util/filetype"
 
 describe("util.filetype", () => {
+  test.each(["cppm", "ccm", "cxxm", "c++m", "ixx"])("recognizes C++ module .%s", (extension) => {
+    expect(filetype(`module.${extension}`)).toBe("cpp")
+  })
+
   test("maps filenames to presentation languages", () => {
     expect(filetype("component.tsx")).toBe("typescript")
     expect(filetype("script.js")).toBe("typescript")

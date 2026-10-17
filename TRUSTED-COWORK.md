@@ -2,7 +2,7 @@
 
 OpenCode-based desktop client for confidential models on TrustedRouter.
 Based on OpenCode Desktop v1.18.30 (3104c142), with upstream MIT attribution retained.
-The main process uses @lore-hex/trusted-router 0.4.0 at https://api.trustedrouter.com/v1.
+The main process uses @lore-hex/trusted-router 0.4.0 at https://api.confidential.trustedrouter.com/v1.
 
 ## Security Boundaries
 
