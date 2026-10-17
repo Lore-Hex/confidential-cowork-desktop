@@ -1,5 +1,46 @@
 # OpenCode Upstream Tracking
 
+## October 17, 2026
+
+Triaged 34 upstream commits after `37e3912d8e` through
+`22e771f5893e255ea78fc10557ed3fb98d3a1072` on `dev`. No source port today.
+V2 prompt/browser handling (`c3a73eca34`) targets a CLI module absent here;
+V2 stream parsing, Gemini retry, dialog/theme, session paging and voice changes
+are not drop-in changes to this client's locked runtime. Broken-pipe retry
+(`22e771f589`) and Gemini malformed-response retry (`180fd9d622`) require
+review of billing/replay semantics, not silent adoption. No free-provider
+catalog/UI changes or upstream release automation imported. The managed-service
+test removal (`543b42ec2c`) was not used to weaken our gates. V2 migration and
+its security review remain incomplete.
+
+Fresh frozen-lockfile installation passed. On the isolated candidate worktree:
+
+* Full runtime: 3,591 passed, 22 skipped, one todo, zero failures, 256 files.
+* Subsequent native core suite: 43 passed, zero failures. No retries or changes
+  to native test timeouts, skips, or implementation. Previous intermittent PTY
+  and watcher failures are not thereby proven fixed.
+* A standalone temporary-directory Parcel `fs-events` probe also received events
+  under both Node and Bun, outside Effect and the test framework, without callback
+  errors. This establishes current operation, not the cause of earlier failures.
+* Desktop/runtime typechecks, 78 desktop tests, three packaging contracts,
+  Node SQLite storage smoke, 12 TUI tests, eight Markdown tests and production
+  build passed. OAuth/PKCE, encrypted credentials/sign-out and privacy checks
+  here are local tests, not a new interactive signed-package login.
+* Real Node and isolated Electron utility-process smokes asserted shell output
+  and successful exit. They are not an interactive model/tool-approval session.
+* One live confidential SDK request returned exact PONG and HTTP 200 using
+  `openai/gpt-oss-120b`, request `chatcmpl-98beb6aab6bf384547ef4448aec4c5ac`.
+  Catalog-based upper estimate $0.0106762624, not measured settled spend.
+  No retries, funding, alternate-host fallback, credential exposure or user
+  session changes. Endpoint: `https://api.confidential.trustedrouter.com/v1`.
+* Existing installed release passed deep codesign and Gatekeeper. Homepage,
+  status, confidential API health, download page and both DMG URLs returned 200.
+  Existing candidate CI was green before this documentation-only update.
+
+No signing or release: application source is unchanged today. Production stays
+`v0.3.0-alpha.1` at `e8e6207bb7`. Fresh signed-candidate OAuth/restart/sign-out,
+stream/tool approval acceptance and interactive Intel validation remain untested.
+
 ## October 16, 2026
 
 Reviewed the 57-commit range after `af6ec83979` through
