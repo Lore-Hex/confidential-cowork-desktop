@@ -1,5 +1,36 @@
 # OpenCode Upstream Tracking
 
+## October 17, 2026, 13:00 UTC Run
+
+This second scheduled run reviewed three new upstream commits through
+`8c173a8f3805d8e749d44311054b07e37a1b2ce1`: hosted Honeycomb/infra cleanup
+and a bundled model snapshot. Neither is a desktop port; no application source
+changed. Main and release heads remain unchanged. Earlier worktrees were preserved.
+
+Fresh frozen install passed. Full runtime had 3,590 passes, 22 skips, one todo
+and one failure: the PTY exit-state test still observed a running process after
+its 20-second wait. This recurrence supersedes any inference that the earlier
+clean run proved a fix. Inspection confirms bun-pty 0.4.8 starts reading in its
+constructor before callers attach listeners, a possible lost-event path, not a
+proven diagnosis of this incident. No adapter, timeout or gate was changed.
+
+The subsequent native suite passed 43/43. Desktop/runtime typechecks, 78 desktop
+tests, three packaging contracts, Node SQLite persistence, 12 TUI tests, eight
+Markdown tests and production build passed. Real Node and isolated Electron
+shell-output/exit smokes passed. PKCE/vault/sign-out assertions were local tests,
+not fresh interactive packaged authentication or model-driven tool approval.
+
+One live confidential PONG returned 200 and exact PONG, `openai/gpt-oss-120b`,
+request `chatcmpl-b6d8cc154feb6cc0b6ab5dee184c6367`. Upper catalog cost estimate
+$0.0106762624, not measured settled spend. No retries/funding; existing encrypted
+credential read only in an isolated profile. Public site, status, confidential
+API health, download page and both DMG links returned 200. Existing installed
+release passed deep codesign and Gatekeeper checks.
+
+No signing, release or website deployment. Production remains v0.3.0-alpha.1;
+V2 migration and fresh signed-candidate acceptance remain incomplete. PTY
+failure is retained as a release blocker. Intel interactive testing was not done.
+
 ## October 17, 2026
 
 Triaged 34 upstream commits after `37e3912d8e` through
