@@ -1,7 +1,22 @@
+import { accountApi } from "./account-api"
+import "./account.css"
+import { api } from "./api"
 import { createSignal, Show } from "solid-js"
-import { Button } from "@opencode-ai/ui/button"
+import { Button } from "@opencode/ui/button"
+import { useLanguage } from "@opencode/app/desktop"
+
+export function AccountBar() {
+  const language = useLanguage()
+  return (
+    <header class="trcc-account-bar">
+      <span>{language.t("cowork.name")}</span>
+      <button onClick={() => void accountApi.accountSignOut()}>{language.t("cowork.signOut")}</button>
+    </header>
+  )
+}
 
 export function AccountSignIn(props: { onSignedIn(): void }) {
+  const language = useLanguage()
   const [busy, setBusy] = createSignal(false)
   const [error, setError] = createSignal("")
   const [key, setKey] = createSignal("")
@@ -10,12 +25,12 @@ export function AccountSignIn(props: { onSignedIn(): void }) {
     setBusy(true)
     setError("")
     try {
-      if (apiKey) await window.api.accountSaveKey(key())
-      if (!apiKey) await window.api.accountSignIn()
+      if (apiKey) await accountApi.accountSaveKey(key())
+      if (!apiKey) await accountApi.accountSignIn()
       setKey("")
       props.onSignedIn()
     } catch {
-      setError("Sign-in could not be completed. Check your browser and unlock your system key store, then retry.")
+      setError(language.t("cowork.signInError"))
     } finally {
       setBusy(false)
     }
@@ -26,20 +41,20 @@ export function AccountSignIn(props: { onSignedIn(): void }) {
         <div class="trcc-wordmark" aria-hidden="true">
           TrustedRouter
         </div>
-        <h1>Trusted Cowork</h1>
+        <h1>{language.t("cowork.name")}</h1>
         <Button size="large" onClick={() => void submit()} disabled={busy()}>
-          {busy() ? "Waiting for sign-in" : "Sign in with TrustedRouter"}
+          {language.t(busy() ? "cowork.waiting" : "cowork.signIn")}
         </Button>
         <Show when={busy()}>
-          <Button variant="ghost" onClick={() => void window.api.accountCancel()}>
-            Cancel
+          <Button variant="ghost" onClick={() => void accountApi.accountCancel()}>
+            {language.t("cowork.cancel")}
           </Button>
         </Show>
         <Show when={error()}>
           <p role="alert">{error()}</p>
         </Show>
         <Button variant="ghost" disabled={busy()} onClick={() => setManual(!manual())}>
-          Use an API key
+          {language.t("cowork.useKey")}
         </Button>
         <Show when={manual()}>
           <form
@@ -48,7 +63,7 @@ export function AccountSignIn(props: { onSignedIn(): void }) {
               void submit(true)
             }}
           >
-            <label for="trcc-key">TrustedRouter API key</label>
+            <label for="trcc-key">{language.t("cowork.keyLabel")}</label>
             <input
               id="trcc-key"
               type="password"
@@ -59,14 +74,14 @@ export function AccountSignIn(props: { onSignedIn(): void }) {
               disabled={busy()}
             />
             <Button type="submit" disabled={busy() || !key().trim()}>
-              Connect
+              {language.t("cowork.connect")}
             </Button>
             <Button
               type="button"
               variant="ghost"
-              onClick={() => void window.api.openExternal("https://trustedrouter.com/console/api-keys")}
+              onClick={() => void api.openExternal("https://trustedrouter.com/console/api-keys")}
             >
-              Get an API key
+              {language.t("cowork.getKey")}
             </Button>
           </form>
         </Show>

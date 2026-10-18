@@ -1,4 +1,39 @@
 import { expect, test } from "bun:test"
+
+for (const endpoint of ["chat/completions", "responses"]) {
+  for (const status of [429, 502, 503, 504]) {
+    test(`${endpoint} HTTP ${status} stays on the confidential host without retry`, async () => {
+      const urls: string[] = []
+      const bridge = await startConfidentialBridge({
+        readKey: async () => "test-secret",
+        fetch: async (input, init) => {
+          urls.push(String(input))
+          expect(init?.redirect).toBe("error")
+          if (String(input).endsWith("/models")) return Response.json({ data: [] })
+          return Response.json({ error: { code: "unavailable", message: "private upstream content" } }, { status })
+        },
+      })
+      try {
+        const response = await fetch(`${bridge.url}/${endpoint}`, {
+          method: "POST",
+          headers: { authorization: `Bearer ${bridge.token}` },
+          body: JSON.stringify({
+            model: "trustedrouter/confidential",
+            ...(endpoint === "responses" ? { input: "test" } : { messages: [] }),
+          }),
+        })
+        expect(response.status).toBe(status)
+        expect(await response.text()).not.toContain("private upstream content")
+        expect(urls).toEqual([
+          "https://api.confidential.trustedrouter.com/v1/models",
+          `https://api.confidential.trustedrouter.com/v1/${endpoint}`,
+        ])
+      } finally {
+        await bridge.stop()
+      }
+    })
+  }
+}
 import { boundedJSON, startConfidentialBridge } from "./confidential-bridge"
 
 test("bounded upstream JSON accepts valid data and cancels oversized bodies", async () => {
@@ -24,6 +59,7 @@ test("SDK bridge preserves streams and tools while enforcing privacy", async () 
     readKey: async () => "real-secret",
     fetch: async (input, init) => {
       const url = String(input)
+      expect(new URL(url).origin).toBe("https://api.confidential.trustedrouter.com")
       if (url.endsWith("/models")) return Response.json({ data: [] })
       requests.push({
         url,
@@ -50,7 +86,7 @@ test("SDK bridge preserves streams and tools while enforcing privacy", async () 
     expect(response.status).toBe(200)
     expect(await response.text()).toContain("call_1")
     expect(requests).toHaveLength(1)
-    expect(requests[0].url).toBe("https://api.trustedrouter.com/v1/chat/completions")
+    expect(requests[0].url).toBe("https://api.confidential.trustedrouter.com/v1/chat/completions")
     expect(requests[0].authorization).toBe("Bearer real-secret")
     expect(requests[0].body.provider).toEqual({ min_privacy: "confidential", data_collection: "deny" })
     expect(requests[0].body).not.toHaveProperty("store")
@@ -90,8 +126,12 @@ test("unauthorized, cross-origin and oversized calls cannot reach inference", as
 test("upstream failure body cannot leak credentials or prompt content", async () => {
   const bridge = await startConfidentialBridge({
     readKey: async () => "secret",
-    fetch: async (input) =>
-      String(input).endsWith("/models") ? Response.json({ data: [] }) : new Response("secret prompt", { status: 503 }),
+    fetch: async (input) => {
+      expect(new URL(String(input)).origin).toBe("https://api.confidential.trustedrouter.com")
+      if (String(input).endsWith("/models")) return Response.json({ data: [] })
+      expect(String(input)).toBe("https://api.confidential.trustedrouter.com/v1/responses")
+      return new Response("secret prompt", { status: 503 })
+    },
   })
   try {
     const response = await fetch(`${bridge.url}/responses`, {
@@ -101,6 +141,32 @@ test("upstream failure body cannot leak credentials or prompt content", async ()
     })
     expect(response.status).toBe(503)
     expect(await response.text()).not.toContain("secret")
+  } finally {
+    await bridge.stop()
+  }
+})
+
+test("network failures never fall back to another API host", async () => {
+  const urls: string[] = []
+  const bridge = await startConfidentialBridge({
+    readKey: async () => "secret",
+    fetch: async (input) => {
+      urls.push(String(input))
+      if (String(input).endsWith("/models")) return Response.json({ data: [] })
+      throw new TypeError("fetch failed")
+    },
+  })
+  try {
+    const response = await fetch(`${bridge.url}/chat/completions`, {
+      method: "POST",
+      headers: { authorization: `Bearer ${bridge.token}` },
+      body: JSON.stringify({ model: "trustedrouter/confidential", messages: [] }),
+    })
+    expect(response.status).toBe(502)
+    expect(urls).toEqual([
+      "https://api.confidential.trustedrouter.com/v1/models",
+      "https://api.confidential.trustedrouter.com/v1/chat/completions",
+    ])
   } finally {
     await bridge.stop()
   }

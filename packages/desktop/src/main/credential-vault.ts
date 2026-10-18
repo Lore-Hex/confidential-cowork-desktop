@@ -28,8 +28,9 @@ export class CredentialVault {
   }
 
   async read() {
+    const encrypted = await readFile(this.file)
     this.requireEncryption()
-    return this.encryption.decryptString(await readFile(this.file))
+    return this.encryption.decryptString(encrypted)
   }
 
   async save(value: unknown) {

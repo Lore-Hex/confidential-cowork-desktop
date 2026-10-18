@@ -5,6 +5,29 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { CredentialVault } from "./credential-vault"
 
+test("a fresh profile does not open the OS key store before sign-in", async () => {
+  const root = await mkdtemp(join(tmpdir(), "trusted-cowork-empty-vault-"))
+  let accesses = 0
+  const vault = new CredentialVault(join(root, "missing"), {
+    isEncryptionAvailable: () => {
+      accesses++
+      return false
+    },
+    encryptString: () => {
+      throw new Error("unexpected encryption")
+    },
+    decryptString: () => {
+      throw new Error("unexpected decryption")
+    },
+  })
+  try {
+    expect(await vault.hasKey()).toBe(false)
+    expect(accesses).toBe(0)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test("vault persists ciphertext with owner-only access, rotates, and deletes", async () => {
   const root = await mkdtemp(join(tmpdir(), "trusted-cowork-vault-"))
   const file = join(root, "credential")

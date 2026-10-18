@@ -17,27 +17,33 @@ client TLS socket through attestation.
 ## Downloads
 
 Use the signed macOS packages linked from [TrustedRouter](https://trustedrouter.com/confidential-cowork).
-Install directly and sign in again when moving from the older Pi or QuillCode apps.
 Updates are manual. Windows and Linux packages are not released for this version.
 
 ## Development
 
-Requires Bun 1.3.14 and Node 24 or newer.
+Requires Bun 1.4.2 and Node 24 or newer. Ensure Bun 1.4.2 is also first on PATH
+because build and test subprocesses invoke `bun`.
 
 ```sh
 bun install --frozen-lockfile
-cd packages/desktop
+bun run check
+cd packages/cli
+OPENCODE_CHANNEL=prod OPENCODE_VERSION=0.4.0-alpha.1 bun run script/build.ts --single --skip-install --skip-web-ui
+cd ../desktop
 bun typecheck
-bun run build
-bun run preview
+bun test src/main electron-builder.config.test.ts --timeout 30000
+OPENCODE_CHANNEL=prod OPENCODE_CLI_DIST=../cli/dist bun run build
+bun scripts/confidential-runtime-smoke.ts
+bun scripts/confidential-desktop-smoke.ts
 ```
 
-The main process uses `@lore-hex/trusted-router` with `https://api.trustedrouter.com/v1`.
+The main process uses `@lore-hex/trusted-router` with `https://api.confidential.trustedrouter.com/v1`.
 Only it can decrypt the stored API key. The bundled runtime receives a scoped
-local capability, not the real key.
+local capability, not the real key. Browser authorization uses `https://trustedrouter.com`.
 
 ## Attribution
 
-Based on OpenCode Desktop v1.18.30. The [upstream README](README.upstream.md) and
-[MIT license](LICENSE) are retained. Upstream workflows are archived under
-`.github/upstream-workflows` and do not execute in this repository.
+Based on OpenCode 2.0.32, upstream commit `4745089e365ed1a9cdfec8eb831ab8a4efe92d78`.
+The [upstream README](README.upstream.md) and [MIT license](LICENSE) are retained.
+Upstream workflows are archived under `.github/upstream-workflows` and do not execute
+in this repository.
