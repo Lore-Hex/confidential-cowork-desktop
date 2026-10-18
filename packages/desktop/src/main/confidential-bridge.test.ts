@@ -9,7 +9,7 @@ for (const endpoint of ["chat/completions", "responses"]) {
         fetch: async (input, init) => {
           urls.push(String(input))
           expect(init?.redirect).toBe("error")
-          if (String(input).endsWith("/models")) return Response.json({ data: [] })
+          if (String(input).endsWith("/models?include=endpoints")) return Response.json({ data: [] })
           return Response.json({ error: { code: "unavailable", message: "private upstream content" } }, { status })
         },
       })
@@ -25,7 +25,7 @@ for (const endpoint of ["chat/completions", "responses"]) {
         expect(response.status).toBe(status)
         expect(await response.text()).not.toContain("private upstream content")
         expect(urls).toEqual([
-          "https://api.confidential.trustedrouter.com/v1/models",
+          "https://api.confidential.trustedrouter.com/v1/models?include=endpoints",
           `https://api.confidential.trustedrouter.com/v1/${endpoint}`,
         ])
       } finally {
@@ -35,6 +35,46 @@ for (const endpoint of ["chat/completions", "responses"]) {
   }
 }
 import { boundedJSON, startConfidentialBridge } from "./confidential-bridge"
+
+test("catalog explicitly requests endpoint details for named confidential models", async () => {
+  const bridge = await startConfidentialBridge({
+    readKey: async () => {
+      throw new Error("public catalog must not read the key")
+    },
+    fetch: async (input) => {
+      const url = new URL(String(input))
+      return Response.json({
+        data: [
+          {
+            id: "moonshotai/kimi-k3",
+            trustedrouter: {
+              supports_chat: true,
+              route_kind: "model",
+              ...(url.searchParams.get("include") === "endpoints"
+                ? {
+                    endpoints: [
+                      {
+                        usage_type: "Credits",
+                        privacy_tier: 3,
+                        provider_e2ee: true,
+                        provider_confidential_compute: true,
+                        supported_parameters: ["tools"],
+                      },
+                    ],
+                  }
+                : {}),
+            },
+          },
+        ],
+      })
+    },
+  })
+  try {
+    expect([...(await bridge.models())]).toContain("moonshotai/kimi-k3")
+  } finally {
+    await bridge.stop()
+  }
+})
 
 test("bounded upstream JSON accepts valid data and cancels oversized bodies", async () => {
   expect(await boundedJSON(Response.json({ ok: true }), 32)).toEqual({ ok: true })
@@ -60,7 +100,7 @@ test("SDK bridge preserves streams and tools while enforcing privacy", async () 
     fetch: async (input, init) => {
       const url = String(input)
       expect(new URL(url).origin).toBe("https://api.confidential.trustedrouter.com")
-      if (url.endsWith("/models")) return Response.json({ data: [] })
+      if (url.endsWith("/models?include=endpoints")) return Response.json({ data: [] })
       requests.push({
         url,
         body: JSON.parse(String(init?.body)),
@@ -128,7 +168,7 @@ test("upstream failure body cannot leak credentials or prompt content", async ()
     readKey: async () => "secret",
     fetch: async (input) => {
       expect(new URL(String(input)).origin).toBe("https://api.confidential.trustedrouter.com")
-      if (String(input).endsWith("/models")) return Response.json({ data: [] })
+      if (String(input).endsWith("/models?include=endpoints")) return Response.json({ data: [] })
       expect(String(input)).toBe("https://api.confidential.trustedrouter.com/v1/responses")
       return new Response("secret prompt", { status: 503 })
     },
@@ -152,7 +192,7 @@ test("network failures never fall back to another API host", async () => {
     readKey: async () => "secret",
     fetch: async (input) => {
       urls.push(String(input))
-      if (String(input).endsWith("/models")) return Response.json({ data: [] })
+      if (String(input).endsWith("/models?include=endpoints")) return Response.json({ data: [] })
       throw new TypeError("fetch failed")
     },
   })
@@ -164,7 +204,7 @@ test("network failures never fall back to another API host", async () => {
     })
     expect(response.status).toBe(502)
     expect(urls).toEqual([
-      "https://api.confidential.trustedrouter.com/v1/models",
+      "https://api.confidential.trustedrouter.com/v1/models?include=endpoints",
       "https://api.confidential.trustedrouter.com/v1/chat/completions",
     ])
   } finally {

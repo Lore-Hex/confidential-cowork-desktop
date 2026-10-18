@@ -28,7 +28,7 @@ because build and test subprocesses invoke `bun`.
 bun install --frozen-lockfile
 bun run check
 cd packages/cli
-OPENCODE_CHANNEL=prod OPENCODE_VERSION=0.4.0-alpha.1 bun run script/build.ts --single --skip-install --skip-web-ui
+OPENCODE_CHANNEL=prod OPENCODE_VERSION=0.4.0-alpha.1 bun run script/build.ts --single --baseline --skip-install --skip-web-ui
 cd ../desktop
 bun typecheck
 bun test src/main electron-builder.config.test.ts --timeout 30000

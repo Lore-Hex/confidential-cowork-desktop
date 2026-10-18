@@ -47,7 +47,7 @@ export async function startConfidentialBridge(options: {
     if (cached && cached.expires > Date.now()) return Promise.resolve(cached.models)
     if (pending) return pending
     pending = catalog
-      .rawRequest("GET", "/models", { timeout: 10_000 })
+      .rawRequest("GET", "/models?include=endpoints", { timeout: 10_000 })
       .then(async (response) => {
         if (!response.ok) throw new Error("Catalog unavailable")
         const result = confidentialModels(await boundedJSON(response, 32 * 1024 * 1024))
