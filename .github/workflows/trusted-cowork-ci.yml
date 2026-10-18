@@ -24,6 +24,11 @@ jobs:
         with:
           bun-version: 1.4.2
       - run: bun install --frozen-lockfile
+      - name: Install local search test dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ripgrep
+          rg --version
       - run: bun run check
       - working-directory: packages/desktop
         run: bun test src/main electron-builder.config.test.ts --timeout 30000

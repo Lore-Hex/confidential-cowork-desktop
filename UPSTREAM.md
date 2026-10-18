@@ -25,6 +25,9 @@ two message endpoint tests and all 34 workspace typechecks pass. Full core suite
 family. Native runtime build and fake-provider inference/permission-denial smoke
 pass. The real public catalog returns 19 eligible choices; that is not a live
 inference test. CI now runs the complete core suite, not just confidential config.
+The first full Linux CI run exposed a missing ripgrep executable: all 23 failures
+attempted a forbidden test-time download. CI now installs ripgrep up front while
+preserving the test suite's network guard; the full-suite retry must pass.
 
 The prior 0.4.0-alpha.1 draft has signed/notarized ARM64 and Intel artifacts.
 It has not been promoted. This candidate needs its own verification and signing;
