@@ -4,6 +4,9 @@ Repository: https://github.com/anomalyco/opencode
 
 Ported snapshot: `4745089e365ed1a9cdfec8eb831ab8a4efe92d78` (OpenCode 2.0.32).
 
+Latest reviewed upstream commit: `3bdab634eb9bebc097dffb8a506c6f095997cd1b`.
+The two subsequent upstream changes are retained as individual cherry-picks.
+
 Trusted Cowork 0.4.0-alpha.1 ports the desktop to the V2 core, schema, provider
 registry, native HTTP server and MessagePort RPC architecture. Preserve the
 confidential config/bridge, encrypted main-process vault, PKCE sign-in, owned stdio
