@@ -4,8 +4,33 @@ Repository: https://github.com/anomalyco/opencode
 
 Ported snapshot: `4745089e365ed1a9cdfec8eb831ab8a4efe92d78` (OpenCode 2.0.32).
 
-Latest reviewed upstream commit: `3bdab634eb9bebc097dffb8a506c6f095997cd1b`.
-The two subsequent upstream changes are retained as individual cherry-picks.
+Latest reviewed upstream commit: `da9d436c36e0145110531ffcd7b15e50016fdd82`.
+Applicable subsequent upstream changes are retained as individual cherry-picks.
+
+## Daily Review: 2026-10-18
+
+Candidate: 0.4.0-alpha.2. Reviewed and ported c38d83c0c4 (idle message filter),
+49e9786bb7 (bounded skill discovery), 63c1a27af5 (filesystem access-denial
+handling), 60a5a6ca7c (null Responses fields), and da9d436c36 (model snapshot).
+Skipped 214fb7fdba: hosted OpenCode console harness guides are not part of this app.
+
+Access-denial handling does not grant filesystem access or alter confidential
+routing/tool permissions. The bundled upstream catalog remains subject to the
+TrustedRouter-only provider registry and confidential model allowlist.
+Client regeneration completed with no additional changes.
+
+Local verification: 157 desktop/packaging tests, 73 Responses fixture tests,
+two message endpoint tests and all 34 workspace typechecks pass. Full core suite:
+6,659 pass, 43 skip, seven fail in the pre-existing macOS Bash compatibility
+family. Native runtime build and fake-provider inference/permission-denial smoke
+pass. The real public catalog returns 19 eligible choices; that is not a live
+inference test. CI now runs the complete core suite, not just confidential config.
+
+The prior 0.4.0-alpha.1 draft has signed/notarized ARM64 and Intel artifacts.
+It has not been promoted. This candidate needs its own verification and signing;
+do not reuse the prior draft's signatures or claim Intel interactive verification
+from an ARM64 machine. No authorized credential was present in the known test or
+packaged-app profile during this audit; no live inference spend was incurred.
 
 Trusted Cowork 0.4.0-alpha.1 ports the desktop to the V2 core, schema, provider
 registry, native HTTP server and MessagePort RPC architecture. Preserve the

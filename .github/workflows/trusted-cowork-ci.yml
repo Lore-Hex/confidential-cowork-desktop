@@ -28,11 +28,15 @@ jobs:
       - working-directory: packages/desktop
         run: bun test src/main electron-builder.config.test.ts --timeout 30000
       - working-directory: packages/core
-        run: bun run script/test.ts test/config/confidential.test.ts
+        run: bun run script/test.ts
+      - working-directory: packages/ai
+        run: bun test test/provider/openai-compatible-responses.test.ts --timeout 30000
+      - working-directory: packages/server
+        run: bun test test/message.test.ts --timeout 30000
       - working-directory: packages/cli
         env:
           OPENCODE_CHANNEL: prod
-          OPENCODE_VERSION: 0.4.0-alpha.1
+          OPENCODE_VERSION: 0.4.0-alpha.2
         run: bun run script/build.ts --single --baseline --skip-install --skip-web-ui
       - working-directory: packages/desktop
         env:
