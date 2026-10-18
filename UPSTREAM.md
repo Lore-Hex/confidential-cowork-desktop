@@ -10,7 +10,8 @@ confidential config/bridge, encrypted main-process vault, PKCE sign-in, owned st
 runtime, provider/model allowlist, permission prompts and disabled telemetry when
 updating this snapshot.
 
-The prior fork's history is retained as merge ancestry. The V1 runtime interception
+The prior fork's history is retained as parent ancestry beneath this upstream
+snapshot port. The V1 runtime interception
 is replaced by native V2 configuration and registry enforcement, not copied into
 the new server architecture. Upstream publishing workflows remain archived.
 
@@ -19,7 +20,7 @@ the new server architecture. Upstream publishing workflows remain archived.
 Local macOS ARM64 checks on 2026-10-17:
 
 * 156 desktop/packaging tests pass, including the upstream packaging contracts.
-* 23 desktop/CLI dependency packages pass typechecking.
+* All 34 workspace packages pass typechecking.
 * Compiled-runtime smoke passes: confidential-only catalog, hostile project
   configuration ignored, local fake-provider inference, pending tool approval.
 * Fresh-profile Electron smoke passes: sign-in, API-key entry, blocked renderer
@@ -29,9 +30,8 @@ Local macOS ARM64 checks on 2026-10-17:
 * Full core suite with Bun 1.4.2 on PATH: 6,653 pass, 43 skip, 8 fail. The remaining
   shell test failures also occurred on the unmodified upstream snapshot in this
   environment. This is not a claim that the full upstream suite is green.
-* Root lint passes. Full-monorepo typecheck attempts hit Astro preference-directory
-  sandbox errors in hosted website packages; the actual product dependency graph
-  was checked separately, without excluding any desktop/runtime dependency.
+* Root lint and the full monorepo check pass. Astro's preference-directory writes
+  required running the check outside the filesystem sandbox.
 
 Pending release gates: signed/notarized ARM64 and Intel packages, clean-install
 OAuth and live confidential streaming, tool execution/denial, restart/sign-out,
