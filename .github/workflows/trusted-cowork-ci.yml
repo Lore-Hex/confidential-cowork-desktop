@@ -33,7 +33,7 @@ jobs:
         env:
           OPENCODE_CHANNEL: prod
           OPENCODE_VERSION: 0.4.0-alpha.1
-        run: bun run script/build.ts --single --skip-install --skip-web-ui
+        run: bun run script/build.ts --single --baseline --skip-install --skip-web-ui
       - working-directory: packages/desktop
         env:
           OPENCODE_CHANNEL: prod
