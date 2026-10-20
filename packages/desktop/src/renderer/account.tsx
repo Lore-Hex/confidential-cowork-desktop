@@ -39,7 +39,7 @@ export function AccountSignIn(props: { onSignedIn(): void }) {
     <main class="trcc-sign-in">
       <div class="trcc-account-content">
         <div class="trcc-wordmark" aria-hidden="true">
-          TrustedRouter
+          NYTE
         </div>
         <h1>{language.t("cowork.name")}</h1>
         <Button size="large" onClick={() => void submit()} disabled={busy()}>

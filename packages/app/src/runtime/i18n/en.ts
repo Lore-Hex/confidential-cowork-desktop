@@ -2,11 +2,11 @@ import { DESKTOP_NATIVE_ENGLISH } from "./desktop-native"
 
 export const dict = {
   "cowork.name": "Trusted Cowork",
-  "cowork.signIn": "Sign in with TrustedRouter",
+  "cowork.signIn": "Sign in",
   "cowork.waiting": "Waiting for sign-in",
   "cowork.cancel": "Cancel",
   "cowork.useKey": "Use an API key",
-  "cowork.keyLabel": "TrustedRouter API key",
+  "cowork.keyLabel": "NYTE / TrustedRouter API key",
   "cowork.connect": "Connect",
   "cowork.getKey": "Get an API key",
   "cowork.signOut": "Sign out",

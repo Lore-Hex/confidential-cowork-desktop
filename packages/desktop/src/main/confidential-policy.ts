@@ -1,4 +1,4 @@
-export const CONFIDENTIAL_MODEL = "trustedrouter/confidential"
+export const CONFIDENTIAL_MODEL = "nyte/confidential"
 
 function record(value: unknown): Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {}

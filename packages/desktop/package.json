@@ -1,10 +1,10 @@
 {
   "name": "@opencode/desktop",
   "private": true,
-  "version": "0.4.0-alpha.2",
+  "version": "0.4.0-alpha.3",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://trustedrouter.com/confidential-cowork",
+  "homepage": "https://nytokenexchange.com/trusted-cowork",
   "author": {
     "name": "OpenCode",
     "email": "hello@opencode.ai"

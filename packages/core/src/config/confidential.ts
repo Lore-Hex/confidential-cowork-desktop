@@ -30,13 +30,13 @@ export function document(value: string) {
     !/^[A-Za-z0-9_-]{32,256}$/.test(input.token) ||
     input.models.length === 0 ||
     input.models.length > 10000 ||
-    !input.models.includes("trustedrouter/confidential") ||
+    !input.models.includes("nyte/confidential") ||
     input.models.some((id) => !id || id.length > 256 || /[\s\x00-\x1f]/.test(id))
   )
     throw new Error("Invalid confidential runtime capability")
 
   const info = Schema.decodeUnknownSync(Info)({
-    model: { providerID: "trustedrouter", model: "trustedrouter/confidential" },
+    model: { providerID: "trustedrouter", model: "nyte/confidential" },
     update: "disable",
     share: "disabled",
     warming: false,
@@ -49,7 +49,7 @@ export function document(value: string) {
     ],
     providers: {
       trustedrouter: {
-        name: "TrustedRouter",
+        name: "NYTE",
         env: [],
         package: "@opencode/ai/providers/openai-compatible",
         settings: { baseURL: url.href, apiKey: input.token, provider: "trustedrouter" },
@@ -58,7 +58,7 @@ export function document(value: string) {
             id,
             {
               modelID: id,
-              name: id === "trustedrouter/confidential" ? "Confidential (automatic)" : id,
+              name: id === "nyte/confidential" ? "NYTE Confidential (automatic)" : id,
               capabilities: { tools: true },
               limit: { context: 32000, output: 8192 },
             },

@@ -1,5 +1,14 @@
 # Trusted Cowork Security And Release Checks
 
+Trusted Cowork by NYTE: https://nytokenexchange.com/trusted-cowork
+
+The default model is `nyte/confidential`. Only confidential tool-capable models
+are available. Standard routing aliases and non-confidential fallback remain
+blocked. NYTE uses the existing TrustedRouter sign-in, encrypted credential
+store, and verified confidential API origin. The app identity is unchanged so
+existing local sessions and credentials remain available. The NYTE-branded
+confidential API hostname must be verified before switching transport origins.
+
 ## Security Boundaries
 
 * Browser sign-in uses S256 PKCE and a single-use, state-bound loopback callback.
