@@ -4,8 +4,39 @@ Repository: https://github.com/anomalyco/opencode
 
 Ported snapshot: `4745089e365ed1a9cdfec8eb831ab8a4efe92d78` (OpenCode 2.0.32).
 
-Latest reviewed upstream commit: `da9d436c36e0145110531ffcd7b15e50016fdd82`.
+Latest inspected upstream commit: `9d90d892dcbfc52b47e95b2ea31b8aba877128fd`.
 Applicable subsequent upstream changes are retained as individual cherry-picks.
+
+## Daily Review: 2026-10-19
+
+Candidate remains 0.4.0-alpha.2, unpublished. Based on the previous daily candidate,
+with 42 additional upstream commits retained separately using upstream SHA trailers.
+This is not an unqualified claim of full upstream parity.
+
+Dependencies were installed with Bun 1.4.2 and `bun install --frozen-lockfile`.
+OpenTUI is now 0.6.6 and Playwright is 1.60.0. Do not introduce an npm lockfile
+or install an unrelated package named `nit` based on ambiguous chat wording.
+
+Deferred security-sensitive changes:
+
+* acdcdb8dd9: breaking V2.1 session/credential migration removes the explicit
+  route-compatibility check for native compaction context. Review the replacement
+  model-bound history semantics and migration fixtures before importing it.
+* cb07c555d4 and 6bac3b9ad8: upstream shared/Drive service adoption is incompatible
+  with our owned, capability-bound runtime. Preserve isolated profile behavior.
+* 31dc762147: direct Gemini Live voice credentials are outside confidential-only
+  inference and are not imported.
+
+Excluded unrelated upstream changes: 802f2d8e75 and 9c2611b400 (hosted deployment
+workflows), 501b15af26 and 157ad7f22a (upstream promotional/install README changes),
+6d6003da86 (hosted share endpoints), 580fcabd92 and c193810f65 (hosted console
+documentation), abcdfda371 (hosted enterprise form).
+
+Imported saved-permission editing only changes explicitly saved approvals; it
+does not change the default ask policy. Compaction continues through the existing
+confidential model boundary. Client regeneration produced no additional changes.
+Local verification results and release blockers are recorded in the update PR.
+No production release is authorized by an install or unit-test result alone.
 
 ## Daily Review: 2026-10-18
 
