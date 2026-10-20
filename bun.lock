@@ -325,7 +325,7 @@
     },
     "packages/desktop": {
       "name": "@opencode/desktop",
-      "version": "0.4.0-alpha.2",
+      "version": "0.4.0-alpha.3",
       "dependencies": {
         "@lore-hex/trusted-router": "0.4.0",
         "@zip.js/zip.js": "2.7.62",

@@ -14,6 +14,11 @@ const model = (changes = {}) => ({
 })
 
 describe("confidential model boundary", () => {
+  test("NYTE default never permits standard routing aliases", () => {
+    expect(CONFIDENTIAL_MODEL).toBe("nyte/confidential")
+    for (const model of ["nyte/auto", "nyte/cheap", "trustedrouter/auto"])
+      expect(() => confidentialRequest({ model }, new Set([CONFIDENTIAL_MODEL]))).toThrow()
+  })
   test("includes only qualifying prepaid tool models and the confidential alias", () => {
     expect([...confidentialModels({ data: [model()] })]).toEqual([CONFIDENTIAL_MODEL, "kimi/test"])
   })

@@ -14,7 +14,7 @@ const provider = Bun.serve({
     assert.equal(new URL(request.url).pathname, "/v1/chat/completions")
     assert.equal(request.headers.get("authorization"), `Bearer ${"x".repeat(64)}`)
     const body = (await request.json()) as { model: string; stream?: boolean }
-    assert.equal(body.model, "trustedrouter/confidential")
+    assert.equal(body.model, "nyte/confidential")
     calls++
     const result = {
       id: "test-completion",
@@ -34,7 +34,7 @@ const provider = Bun.serve({
   },
 })
 const config = confidentialRuntimeConfig(`http://127.0.0.1:${provider.port}/v1`, "x".repeat(64), [
-  "trustedrouter/confidential",
+  "nyte/confidential",
   "moonshotai/kimi-k2.7",
 ])
 let runtime: Awaited<ReturnType<typeof startConfidentialProcess>> | undefined
@@ -69,7 +69,7 @@ try {
   }
   const selected = await read("/api/model/default")
   assert.equal(selected.data.providerID, "trustedrouter")
-  assert.equal(selected.data.id, "trustedrouter/confidential")
+  assert.equal(selected.data.id, "nyte/confidential")
   const providers = await read("/api/provider")
   assert.deepEqual(
     providers.data.map((p: { id: string }) => p.id),
@@ -78,7 +78,7 @@ try {
   const models = await read("/api/model")
   assert.deepEqual(models.data.map((m: { id: string }) => m.id).sort(), [
     "moonshotai/kimi-k2.7",
-    "trustedrouter/confidential",
+    "nyte/confidential",
   ])
   const generated = await read("/api/experimental/generate", { prompt: "Reply PONG" })
   assert.equal(generated.data.text, "PONG")

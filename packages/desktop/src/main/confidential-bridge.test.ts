@@ -18,7 +18,7 @@ for (const endpoint of ["chat/completions", "responses"]) {
           method: "POST",
           headers: { authorization: `Bearer ${bridge.token}` },
           body: JSON.stringify({
-            model: "trustedrouter/confidential",
+            model: "nyte/confidential",
             ...(endpoint === "responses" ? { input: "test" } : { messages: [] }),
           }),
         })
@@ -117,7 +117,7 @@ test("SDK bridge preserves streams and tools while enforcing privacy", async () 
       method: "POST",
       headers: { authorization: `Bearer ${bridge.token}` },
       body: JSON.stringify({
-        model: "trustedrouter/confidential",
+        model: "nyte/confidential",
         stream: true,
         messages: [{ role: "user", content: "hello" }],
         provider: { data_collection: "allow" },
@@ -177,7 +177,7 @@ test("upstream failure body cannot leak credentials or prompt content", async ()
     const response = await fetch(`${bridge.url}/responses`, {
       method: "POST",
       headers: { authorization: `Bearer ${bridge.token}` },
-      body: JSON.stringify({ model: "trustedrouter/confidential", input: "hi" }),
+      body: JSON.stringify({ model: "nyte/confidential", input: "hi" }),
     })
     expect(response.status).toBe(503)
     expect(await response.text()).not.toContain("secret")
@@ -200,7 +200,7 @@ test("network failures never fall back to another API host", async () => {
     const response = await fetch(`${bridge.url}/chat/completions`, {
       method: "POST",
       headers: { authorization: `Bearer ${bridge.token}` },
-      body: JSON.stringify({ model: "trustedrouter/confidential", messages: [] }),
+      body: JSON.stringify({ model: "nyte/confidential", messages: [] }),
     })
     expect(response.status).toBe(502)
     expect(urls).toEqual([
