@@ -7,6 +7,37 @@ Ported snapshot: `4745089e365ed1a9cdfec8eb831ab8a4efe92d78` (OpenCode 2.0.32).
 Latest inspected upstream commit: `9d90d892dcbfc52b47e95b2ea31b8aba877128fd`.
 Applicable subsequent upstream changes are retained as individual cherry-picks.
 
+## Daily Review: 2026-10-21
+
+Product baseline: `26468e34fba25062506de1786390f197c8abbd8c`.
+Upstream default branch is `dev`, not `main`. Discovered head:
+`681156c82fcdd02a64dee0e81967ea35e5c8b886`.
+There are 62 commits since the last inspected revision above. This is a partial
+review, not full upstream parity: only `db1fbe849ca213000c92714e70ca86e23385af2b`
+(Electron 44.9.1) is ported in this candidate. The other 61 remain pending review;
+the last fully inspected revision above is deliberately unchanged. Retain the
+previous V2.1 migration, shared-service and direct-voice deferrals.
+
+Local checks: all 34 workspace lint/typecheck tasks pass; 158 desktop/packaging,
+73 Responses and two server-message tests pass. The full core suite has 6,674
+passes, 43 skips and seven failures in the previously documented macOS Bash
+compatibility family. Those failures remain gates, not silently waived results.
+CLI and desktop builds, fake-provider runtime inference/tool-denial smoke and
+isolated Electron UI/network-isolation smoke pass with the Electron update.
+
+Live PONG was attempted using the existing encrypted app credential from the
+development profile. The signed app could not decrypt it; no inference request
+was sent and no inference spend was incurred. Fresh signed-app login is needed
+before live streaming/tool and restart/sign-out gates can be claimed. No user
+credentials were modified or revoked. Mock inference is not live verification.
+
+No release was published. Alpha.3's Intel signing job failed a third time on
+Apple CloudKit ticket lookup (NSURLErrorDomain -1005, stapler error 68); its ARM
+artifact remains verified. The existing download page returns 200 and the new
+NYTE path is still unpublished (404). Website PR #1910 must remain held until
+both assets and all signed-package release gates pass. This Electron candidate
+needs a new version and new signatures before any promotion.
+
 ## Daily Review: 2026-10-19
 
 Candidate remains 0.4.0-alpha.2, unpublished. Based on the previous daily candidate,
