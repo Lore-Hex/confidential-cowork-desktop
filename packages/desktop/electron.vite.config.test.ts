@@ -88,6 +88,23 @@ test("bundles one Effect runtime and Drizzle while keeping native dependencies e
 
     if (!result.config.main) throw new Error("Missing main-process build configuration")
 
+    // Confidential mode moved terminals into the owned CLI. Keep exercising the
+    // cross-target native resolver through a fixture instead of a dead app import.
+    result.config.main.plugins ??= []
+    result.config.main.plugins.push({
+      name: "native-package-fixture",
+      resolveId(id) {
+        if (id === "virtual:native-package-fixture") return id
+      },
+      load(id) {
+        if (id === "virtual:native-package-fixture") return 'export { spawn } from "@lydell/node-pty"'
+      },
+    })
+    result.config.main.build!.rolldownOptions!.input = {
+      index: "src/main/index.ts",
+      native: "virtual:native-package-fixture",
+    }
+
     const config = await new MainConfigFactory(
       result.config.main,
       { configFile: false, mode: "production" },

@@ -39,6 +39,31 @@ describe("normalizeAgentList", () => {
 })
 
 describe("normalizeProviderList", () => {
+  test.each([
+    [0, ""],
+    [Date.parse("2026-10-01"), "2026-10-01"],
+  ])("preserves unknown release dates for model visibility (%p)", (released, expected) => {
+    const result = normalizeProviderList(
+      [{ id: "trustedrouter", name: "NYTE" }] as ProviderListOutput["data"],
+      [
+        {
+          id: "nyte/confidential",
+          modelID: "nyte/confidential",
+          providerID: "trustedrouter",
+          name: "NYTE Confidential (automatic)",
+          capabilities: { tools: true, input: ["text"], output: ["text"] },
+          variants: [],
+          time: { released },
+          cost: [],
+          status: "active",
+          enabled: true,
+          limit: { context: 32000, output: 8192 },
+        },
+      ] as ModelListOutput["data"],
+    )
+    expect(result.all.get("trustedrouter")?.models["nyte/confidential"].release_date).toBe(expected)
+  })
+
   test("groups current models into the app provider catalog", () => {
     const result = normalizeProviderList(
       [{ id: "openai", name: "OpenAI", package: "@ai-sdk/openai" }] as ProviderListOutput["data"],
