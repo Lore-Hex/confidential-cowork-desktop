@@ -287,7 +287,9 @@ const runPermissionCommand = (
     expect(yield* permission.list()).toEqual([])
     expect(yield* Queue.size(queue)).toBe(0)
     return { exit, requests }
-  }).pipe(Effect.scoped, Effect.timeout(Duration.seconds(5)))
+  // Includes cold PowerShell startup on CI, not only the permission exchange.
+  // Keep this bounded below the runner's 30s per-test timeout.
+  }).pipe(Effect.scoped, Effect.timeout(Duration.seconds(15)))
 
 // Directory cases still document inherited limitations; fixed scanner cases require matching behavior.
 describe("ShellTool scanner permissions", () => {
