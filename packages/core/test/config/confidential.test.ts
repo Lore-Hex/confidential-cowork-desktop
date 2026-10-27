@@ -11,7 +11,7 @@ describe("confidential V2 configuration", () => {
   test("defines only the bridge provider and explicit tool approval", () => {
     const { info } = ConfidentialConfig.document(JSON.stringify(capability))
     expect(Object.keys(info.providers!)).toEqual(["trustedrouter"])
-    expect(info.providers!.trustedrouter.name).toBe("NYTE")
+    expect(info.providers!.trustedrouter.name).toBe("NY Token Exchange")
     expect(info.providers!.trustedrouter.settings!.baseURL).toBe(capability.baseURL)
     expect(info.providers!.trustedrouter.package).toBe("@opencode/ai/providers/openai-compatible")
     expect(Object.keys(info.providers!.trustedrouter.models!)).toEqual(capability.models)

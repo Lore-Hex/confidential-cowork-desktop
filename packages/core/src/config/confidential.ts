@@ -49,7 +49,7 @@ export function document(value: string) {
     ],
     providers: {
       trustedrouter: {
-        name: "NYTE",
+        name: "NY Token Exchange",
         env: [],
         package: "@opencode/ai/providers/openai-compatible",
         settings: { baseURL: url.href, apiKey: input.token, provider: "trustedrouter" },

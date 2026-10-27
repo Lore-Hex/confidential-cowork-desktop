@@ -44,7 +44,7 @@ describe("normalizeProviderList", () => {
     [Date.parse("2026-10-01"), "2026-10-01"],
   ])("preserves unknown release dates for model visibility (%p)", (released, expected) => {
     const result = normalizeProviderList(
-      [{ id: "trustedrouter", name: "NYTE" }] as ProviderListOutput["data"],
+      [{ id: "trustedrouter", name: "NY Token Exchange" }] as ProviderListOutput["data"],
       [
         {
           id: "nyte/confidential",
