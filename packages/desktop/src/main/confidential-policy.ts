@@ -26,7 +26,7 @@ export function confidentialModels(payload: unknown) {
         const endpoint = record(value)
         return (
           endpoint.usage_type === "Credits" &&
-          endpoint.privacy_tier === 3 &&
+          (endpoint.privacy_tier === 3 || endpoint.privacy_tier === 4) &&
           endpoint.provider_e2ee === true &&
           endpoint.provider_confidential_compute === true &&
           Array.isArray(endpoint.supported_parameters) &&

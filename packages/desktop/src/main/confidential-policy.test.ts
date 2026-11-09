@@ -22,9 +22,30 @@ describe("confidential model boundary", () => {
   test("includes only qualifying prepaid tool models and the confidential alias", () => {
     expect([...confidentialModels({ data: [model()] })]).toEqual([CONFIDENTIAL_MODEL, "kimi/test"])
   })
+  test("includes trusted tier-4 confidential tool models", () => {
+    expect([...confidentialModels({ data: [model({ privacy_tier: 4 })] })]).toEqual([
+      CONFIDENTIAL_MODEL,
+      "kimi/test",
+    ])
+  })
+  for (const changes of [
+    { provider_e2ee: false },
+    { provider_confidential_compute: false },
+    { supported_parameters: [] },
+    { usage_type: "BYOK" },
+  ]) {
+    test(`tier 4 still requires confidential eligibility ${JSON.stringify(changes)}`, () => {
+      expect([...confidentialModels({ data: [model({ privacy_tier: 4, ...changes })] })]).toEqual([
+        CONFIDENTIAL_MODEL,
+      ])
+    })
+  }
   for (const changes of [
     { usage_type: "BYOK" },
     { privacy_tier: 2 },
+    { privacy_tier: 5 },
+    { privacy_tier: "4" },
+    { privacy_tier: null },
     { provider_e2ee: false },
     { provider_confidential_compute: false },
     { supported_parameters: [] },
